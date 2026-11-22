@@ -4,7 +4,7 @@
 //
 //   npm run library -- scan <dir> [--limit 60]       contact sheet of a folder, adds nothing
 //   npm run library -- add <file>... --source own-ai|own-real [--name short-name] [--tags a,b] [--issues "..."]
-//   npm run library -- sheet [--source pexels] [--tag dog]
+//   npm run library -- sheet [--source pexels] [--tag city]
 //   npm run library -- list
 //
 // Pexels clips are added by scripts/pexels.mjs.

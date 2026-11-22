@@ -52,7 +52,7 @@ const Cover: React.FC<{ head: string; sub: string }> = ({ head, sub }) => (
     <div style={{ width: 44, height: 44, borderRadius: 22, background: C.primary, boxShadow: `0 0 40px ${C.primary}88`, marginBottom: 48 }} />
     <div style={{ fontWeight: 700, fontSize: 104, lineHeight: 1.05, letterSpacing: "-0.02em" }}>{head}</div>
     {sub ? <div style={{ marginTop: 36, fontWeight: 500, fontSize: 48, color: C.primary }}>{sub}</div> : null}
-    <div style={{ marginTop: 120, fontWeight: 500, fontSize: 30, opacity: 0.75 }}>Wischen →</div>
+    <div style={{ marginTop: 120, fontWeight: 500, fontSize: 30, opacity: 0.75 }}>Swipe →</div>
   </div>
 );
 
@@ -103,9 +103,6 @@ const Outro: React.FC<{ head: string; sub: string }> = ({ head, sub }) => (
     >
       LINK IN BIO
     </div>
-    {sub.startsWith("Ergänzungsfuttermittel") ? null : (
-      <div style={{ marginTop: 34, fontWeight: 500, fontSize: 26, opacity: 0.7 }}>Ergänzungsfuttermittel für Hunde.</div>
-    )}
   </div>
 );
 

@@ -1,7 +1,7 @@
 // Pexels stock video -> asset library, with the author, source URL and
 // license recorded in assets/manifest.json. Needs PEXELS_API_KEY in .env.
 //
-//   npm run pexels -- search "senior dog stairs" [--n 15] [--min 6] [--page 1]
+//   npm run pexels -- search "city street sunrise" [--n 15] [--min 6] [--page 1]
 //   npm run pexels -- get <id>... [--name short-name] [--tags a,b]
 //
 // Lifestyle only: never use a stock person as if they use or endorse the brand.

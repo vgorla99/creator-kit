@@ -19,17 +19,17 @@ const line = { from: 0, to: 120, at: 0 };
 const shown = (text, head) => captionChunks([line], [{ text, head }]).map((c) => c.words.map((w) => w.text).join(" "));
 
 // Number words match the headline's digits; the new part of the line stays.
-assert.deepEqual(shown("Acht Zutaten. Ein Snack. Was steckt drin?", "8 ZUTATEN. 1 SNACK."), ["Was steckt drin?"]);
+assert.deepEqual(shown("Acht Schritte. Ein Plan. Was steckt drin?", "8 SCHRITTE. 1 PLAN."), ["Was steckt drin?"]);
 assert.deepEqual(shown("Eins: kürzer, dafür öfter. Drei kleine Runden statt einer großen.", "1. KÜRZER, DAFÜR ÖFTER."), ["Drei kleine Runden", "statt einer großen."]);
 // Filler words don't keep a sentence the headline already says.
-assert.deepEqual(shown("Glucosamin ist ein Aminozucker. Der Körper nutzt ihn.", "GLUCOSAMIN: AMINOZUCKER."), ["Der Körper nutzt ihn."]);
-// A word split over the headline's two lines still matches ("HUNDE-" / "JAHRE" is rejoined in fromPlan).
+assert.deepEqual(shown("Kaffee ist ein Genussmittel. Der Körper merkt es.", "KAFFEE: GENUSSMITTEL."), ["Der Körper merkt es."]);
+// A word split over the headline's two lines still matches ("WOCHEN-" / "PLAN" is rejoined in fromPlan).
 assert.deepEqual(shown("Leider ein Mythos.", "LEIDER EIN MYTHOS."), []);
 // The CTA button covers "Link in Bio."
-assert.deepEqual(shown("Alle Zutaten: Link in Bio.", "LINK IN BIO"), ["Alle Zutaten:"]);
+assert.deepEqual(shown("Alle Details: Link in Bio.", "LINK IN BIO"), ["Alle Details:"]);
 // No headline -> everything is captioned.
 assert.deepEqual(shown("Ich passe auf dich auf.", ""), ["Ich passe auf", "dich auf."]);
 // Lone words fold into a neighbour; filler-only scraps between skipped sentences go.
-assert.deepEqual(shown("Das ganze Etikett findest du über den Link in Bio.", "LINK IN BIO"), ["Das ganze Etikett", "findest du über", "den Link in Bio."]);
-assert.deepEqual(shown("Und: Krallen kurz halten. Das gibt mehr Halt.", "KRALLEN KURZ HALTEN."), ["Das gibt mehr Halt."]);
+assert.deepEqual(shown("Das ganze Rezept findest du über den Link in Bio.", "LINK IN BIO"), ["Das ganze Rezept", "findest du über", "den Link in Bio."]);
+assert.deepEqual(shown("Und: Schultern locker lassen. Das gibt mehr Ruhe.", "SCHULTERN LOCKER LASSEN."), ["Das gibt mehr Ruhe."]);
 console.log("captions check passed");

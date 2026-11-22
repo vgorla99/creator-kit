@@ -103,7 +103,7 @@ const BeatText: React.FC<{ f: number; beat: Beat; s: number; out: number; hook: 
       <Title f={f} lines={beat.title} top={centered ? CENTER_TOP : hook ? HOOK_TOP : TITLE_TOP} max={centered ? TITLE_BIG : TITLE_MAX} inAt={inAt} outAt={out} />
       {beat.block ? <BlockView f={f} s={s} out={out} block={beat.block} withRows={Boolean(beat.rows)} /> : null}
       {beat.rows ? <Rows f={f} s={s} out={out} rows={beat.rows} /> : null}
-      {/* Spoken captions replace a beat's note (the CTA's "Ergänzungsfuttermittel" note stays). */}
+      {/* Spoken captions replace a beat's note (a CTA's legal note stays). */}
       {beat.note && !captioned && f < out ? <Typewriter f={f} start={noteAt} text={beat.note} top={SAFE_CAPTION_Y} color={C.light} /> : null}
     </>
   );

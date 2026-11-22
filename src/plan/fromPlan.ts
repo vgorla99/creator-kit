@@ -46,7 +46,7 @@ const pair = (t: readonly string[] | undefined, where: string): readonly [string
   return [t[0], t[1]];
 };
 
-// A headline as one string; a word broken over the two lines ("HUNDE-" / "JAHRE") is rejoined.
+// A headline as one string; a word broken over the two lines ("WOCHEN-" / "PLAN") is rejoined.
 const headText = (t: readonly string[]) => t.join("\n").replace(/-\n/g, "").replace(/\n/g, " ");
 
 // "2026-10" + "V01" -> "2610-V01" (a valid, month-unique composition id)

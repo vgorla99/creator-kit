@@ -72,7 +72,7 @@ function chunksOf(words: readonly Word[]): Word[][] {
   return merged;
 }
 
-// Number words match the digits a headline uses ("Acht Zutaten" = "8 ZUTATEN").
+// Number words match the digits a headline uses ("Acht Schritte" = "8 SCHRITTE").
 // German table: other languages need their own.
 const NUM: Readonly<Record<string, string>> = {
   null: "0",
@@ -96,7 +96,7 @@ const norm = (w: string) => {
   const t = w.toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
   return NUM[t] ?? t;
 };
-// Same word, or the same stem (Hundejahr / Hundejahre, beides / beide).
+// Same word, or the same stem (Wochenplan / Wochenpläne, beides / beide).
 const onScreen = (t: string, head: readonly string[]) => head.some((h) => h === t || (Math.min(h.length, t.length) >= 5 && (h.startsWith(t) || t.startsWith(h))));
 
 function notOnScreen(words: readonly Word[], head: string): Word[] {
