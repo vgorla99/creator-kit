@@ -110,7 +110,7 @@ A second way to make reels: describe a month in JSON and the engine builds every
 ```jsonc
 {
   "month": "2026-01",
-  "defaults": { "cta": { "button": "LINK IN BIO", "sub": "…", "note": "…" }, "videoTime": "18:00", "voBreak": "<break time=\"1.0s\" />", "baseTags": [], "igTags": [] },
+  "defaults": { "cta": { "button": "LINK IN BIO", "sub": "…", "note": "…" }, "timezone": "UTC", "videoTime": "18:00", "voBreak": "<break time=\"1.0s\" />", "baseTags": [], "igTags": [] },
   "videos": [{
     "id": "V01", "slug": "demo",
     "line": "footage",            // "footage" = library clips · "motion" = brand stages + blocks
