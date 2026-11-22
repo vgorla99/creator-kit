@@ -2,9 +2,9 @@
 //
 //   npm run publora -- connections                 list connected accounts (read-only)
 //   npm run publora -- status                      scheduled posts + remaining Starter slots (read-only)
-//   npm run publora -- schedule 2026-10 V01[,V03]  upload final.mp4 + schedule at the plan's date/time (Berlin)
+//   npm run publora -- schedule 2026-10 V01[,V03]  upload final.mp4 + schedule at the plan's date/time (plan.defaults.timezone)
 //
-// Only run `schedule` after Vitor's "approve schedule" for those IDs.
+// Only run `schedule` after the creator's "approve schedule" for those IDs.
 // Starter plan: 15 posts/month per platform, max 3 pending, max 7 days ahead.
 // Publora can't set TikTok's AI label or first comment → only AI-free videos, first comment by hand.
 
@@ -44,14 +44,15 @@ async function tiktokId() {
   return tk[0].platformId;
 }
 
-// "2026-10-01" + "20:30" in Europe/Berlin -> ISO UTC (handles the 25 Oct DST switch).
-function berlinToUtc(date, time) {
+// "2026-10-01" + "20:30" in an IANA zone (e.g. "Europe/Lisbon") -> ISO UTC (DST-aware).
+function localToUtc(date, time, timeZone) {
   const guess = new Date(`${date}T${time}:00Z`);
-  const offset = new Intl.DateTimeFormat("en-US", { timeZone: "Europe/Berlin", timeZoneName: "shortOffset" })
+  const offset = new Intl.DateTimeFormat("en-US", { timeZone, timeZoneName: "shortOffset" })
     .formatToParts(guess)
-    .find((p) => p.type === "timeZoneName").value; // "GMT+2"
-  const hours = Number(offset.replace("GMT", "") || 0);
-  return new Date(guess.getTime() - hours * 3600_000).toISOString();
+    .find((p) => p.type === "timeZoneName").value; // "GMT", "GMT+2", "GMT+5:30"
+  const [, sign = "+", h = "0", m = "0"] = /GMT([+-])?(\d+)?(?::(\d+))?/.exec(offset);
+  const minutes = (sign === "-" ? -1 : 1) * (Number(h) * 60 + Number(m));
+  return new Date(guess.getTime() - minutes * 60_000).toISOString();
 }
 
 async function pending() {
@@ -61,6 +62,7 @@ async function pending() {
 
 async function schedule(month, ids) {
   const plan = JSON.parse(readFileSync(join(ROOT, "content", month, "plan.json"), "utf8"));
+  const tz = plan.defaults.timezone ?? "UTC";
   const manifest = JSON.parse(readFileSync(join(ROOT, "assets", "manifest.json"), "utf8"));
   const ai = new Set(manifest.assets.filter((a) => a.ai).map((a) => a.id));
   const ledgerPath = join(ROOT, "content", month, "schedule.json");
@@ -76,7 +78,7 @@ async function schedule(month, ids) {
     if (v.beats.some((b) => b.shot?.asset && ai.has(b.shot.asset))) die(`${id} contains own AI clips — post manually with TikTok's AI label`);
     const file = join(ROOT, "out", month, `${v.id}-${v.slug}`, "final.mp4");
     if (!existsSync(file)) die(`${id}: no final.mp4 yet (npm run produce -- ${month} --final ${id})`);
-    const when = berlinToUtc(v.date, plan.defaults.videoTime);
+    const when = localToUtc(v.date, plan.defaults.videoTime, tz);
     const days = (new Date(when) - Date.now()) / 86_400_000;
     if (days <= 0) die(`${id}: ${when} is in the past`);
     if (days > HORIZON_DAYS) die(`${id}: ${v.date} is more than ${HORIZON_DAYS} days ahead (Starter) — schedule it later`);
@@ -97,7 +99,7 @@ async function schedule(month, ids) {
     queued++;
     ledger[id] = { postGroupId: draft.postGroupId, scheduledTime: done.scheduledTime ?? when, file: `${v.id}-${v.slug}/final.mp4`, mb: +(statSync(file).size / 1048576).toFixed(1) };
     writeFileSync(ledgerPath, `${JSON.stringify(ledger, null, 2)}\n`);
-    console.log(`✔ ${id} scheduled for ${v.date} ${plan.defaults.videoTime} (Berlin) → ${ledger[id].scheduledTime}  [${draft.postGroupId}]`);
+    console.log(`✔ ${id} scheduled for ${v.date} ${plan.defaults.videoTime} (${tz}) → ${ledger[id].scheduledTime}  [${draft.postGroupId}]`);
   }
 }
 

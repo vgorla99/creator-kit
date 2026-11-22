@@ -3,6 +3,7 @@
   "title": "Example month",
   "status": "example: neutral demo copy, no real brand",
   "defaults": {
+    "timezone": "UTC",
     "videoTime": "18:00",
     "carouselTime": "12:00",
     "cta": { "button": "LINK IN BIO", "sub": "YOUR PRODUCT", "note": "A short legal or disclaimer line." },
