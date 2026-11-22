@@ -1,0 +1,14 @@
+/* Shared tokens for the README images (assets/readme/*.jpg). Fonts come from the repo's own @fontsource packages.
+   Rebuild: render the stills the HTML files reference into out/readme/ (npx remotion still src/index.ts <id> out/readme/<id>-<frame>.png --frame=<frame>),
+   then screenshot each page at 2x, e.g. chrome --headless=new --force-device-scale-factor=2 --window-size=1280,640 --screenshot=banner.png banner.html */
+@font-face { font-family: "SG"; font-weight: 500; src: url("../../../node_modules/@fontsource/space-grotesk/files/space-grotesk-latin-500-normal.woff2"); }
+@font-face { font-family: "SG"; font-weight: 700; src: url("../../../node_modules/@fontsource/space-grotesk/files/space-grotesk-latin-700-normal.woff2"); }
+@font-face { font-family: "JB"; font-weight: 500; src: url("../../../node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-500-normal.woff2"); }
+@font-face { font-family: "JB"; font-weight: 700; src: url("../../../node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-700-normal.woff2"); }
+:root { --ink: #0D0D12; --ink2: #16161D; --line: #2A2A33; --paper: #F4F1EA; --muted: #9C9AA3; --coral: #FF5A36; --teal: #0E8A82; --violet: #2B1E5C; }
+* { box-sizing: border-box; margin: 0; }
+body { font-family: "SG", sans-serif; -webkit-font-smoothing: antialiased; }
+.mono { font-family: "JB", monospace; }
+.phone { position: absolute; border-radius: 34px; padding: 9px; background: #1E1E26; box-shadow: 0 0 0 1px #34343E inset, 0 40px 80px -20px rgba(0,0,0,.7); }
+.phone img { display: block; width: 100%; border-radius: 26px; }
+.grain { position: absolute; inset: 0; pointer-events: none; opacity: .06; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
