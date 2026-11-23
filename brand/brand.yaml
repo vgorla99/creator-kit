@@ -1,0 +1,96 @@
+# ─────────────────────────────────────────────────────────────
+#  Your brand, in one file. Reels (and later your website) read it.
+#
+#  Easiest way to fill it: open Claude Code here and type /brand-intake.
+#  Editing by hand? Run `npm run brand:check` afterwards; it tells you in
+#  plain English what to fix.
+#
+#  Only brand.name, brand.handle and the five visual.colors are required.
+#  Everything else is optional. Delete what you don't need.
+#
+#  This example is an invented brand (Kiln Hour). Replace it with yours.
+#  No passwords or API keys in here: those go in .env.
+# ─────────────────────────────────────────────────────────────
+
+brand:
+  name: Kiln Hour
+  handle: "@kilnhour"
+  niche: hand-built pottery at home, no wheel needed
+  audience: beginners with a kitchen table and one free evening a week
+  language: en
+  location: Lisbon, Portugal
+
+socials:
+  instagram: https://instagram.com/kilnhour
+  tiktok: https://tiktok.com/@kilnhour
+  youtube: https://youtube.com/@kilnhour
+  website: https://kilnhour.example
+
+voice:
+  tone: warm, calm, a little nerdy about clay
+  do:
+    - show the messy middle, not only the finished piece
+    - give one tip per video, with the exact tool or step
+    - say when something failed and why
+  dont:
+    - no "you're doing it wrong" hooks
+    - no gear-shaming; a kitchen knife is a fine tool
+  sample_caption: "Cracked at the handle again. Turns out the fix is slip, patience and a damp towel overnight. Save this for your next clay night."
+  words_per_second: 2.5
+  cta_style: "soft: save it for your next clay night"
+
+visual:
+  colors:
+    dark: "#1B1714"      # warm charcoal: deep background, text on light
+    light: "#F6EFE6"     # clay cream: light background, text on dark
+    primary: "#E8743F"   # terracotta: highlights, button
+    secondary: "#5E8F7E" # celadon glaze: wipes, progress, second accent
+    tertiary: "#3B2850"  # plum underglaze: stat and button background
+  fonts:
+    display: Space Grotesk
+    body: Inter
+    mono: JetBrains Mono
+  wordmark:
+    prefix: KILN
+    suffix: HOUR
+  end_card:
+    line: New clay night every Thursday
+    button: Follow for more
+
+references:
+  - url: https://example.com/reference-1
+    why: slow, close-up hand shots with no music, only the sound of the clay
+  - url: https://example.com/reference-2
+    why: one numbered tip per reel, big text, done in under 30 seconds
+  - url: https://example.com/reference-3
+    why: honest failure posts that get more saves than the wins
+
+motion:
+  engine: remotion
+  aspect: "9:16"
+  fps: 30
+  locked_terms: [spring pop, slow push-in, wipe reveal]
+  rejected_terms: [glitch, rgb split, whoosh on every cut]
+  music: null
+
+content:
+  pillars:
+    - beginner techniques (pinch, coil, slab)
+    - fixing cracks and failures
+    - glazing without a kiln at home
+  series:
+    - Clay night in 60 seconds
+    - Why did this crack?
+  hook_types: [mistake, before/after, one-tool challenge]
+  posting_days: [tue, thu, sun]
+  trial_reels: true
+
+posting:
+  provider: native
+  timezone: Europe/Lisbon
+
+site:
+  domain: kilnhour.example
+  pages: [home, about, workshops, free guide]
+  offer: small online hand-building workshops, 6 people per group
+  lead_magnet: "free PDF: the 10 tools you already have in your kitchen"

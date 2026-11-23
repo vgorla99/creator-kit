@@ -12,7 +12,7 @@ import { ROOT } from "./lib/media.mjs";
 
 const out = join(ROOT, "out", "_tmp", "captions-check.mjs");
 mkdirSync(join(ROOT, "out", "_tmp"), { recursive: true });
-buildSync({ entryPoints: [join(ROOT, "src", "footage", "Captions.tsx")], bundle: true, platform: "node", format: "esm", packages: "external", outfile: out, logLevel: "error" });
+buildSync({ entryPoints: [join(ROOT, "src", "footage", "Captions.tsx")], bundle: true, platform: "node", format: "esm", packages: "external", loader: { ".yaml": "text" }, outfile: out, logLevel: "error" });
 const { captionChunks } = await import(pathToFileURL(out).href);
 
 const line = { from: 0, to: 120, at: 0 };

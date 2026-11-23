@@ -1,0 +1,171 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/vgorla99/creator-kit/main/schema/brand.schema.json",
+  "title": "Creator Kit brand file (brand/brand.yaml)",
+  "description": "One file that feeds reels and sites. Only brand.name, brand.handle and the five visual.colors are required; everything else is optional and can be added later. Each field's description is also the plain-English hint `npm run brand:check` prints when a value is wrong.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["brand", "visual"],
+  "properties": {
+    "brand": {
+      "description": "a section with your name and @handle",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "handle"],
+      "properties": {
+        "name": { "description": "your brand or channel name (1 to 40 characters), like Kiln Hour", "type": "string", "minLength": 1, "maxLength": 40 },
+        "handle": { "description": "your social @handle: an @ followed by letters, numbers, dots or underscores, like @kilnhour", "type": "string", "pattern": "^@[A-Za-z0-9._]{1,30}$" },
+        "niche": { "description": "one line on what you make content about, like \"hand-built pottery at home, no wheel needed\"", "type": "string", "minLength": 1 },
+        "audience": { "description": "one line on who it is for, like \"beginners with a kitchen table and one free evening a week\"", "type": "string", "minLength": 1 },
+        "language": { "description": "a language code like en, pt or en-GB", "type": "string", "pattern": "^[a-z]{2,3}(-[A-Z]{2})?$" },
+        "location": { "description": "a city or country, like Lisbon, Portugal", "type": "string", "minLength": 1 }
+      }
+    },
+    "socials": {
+      "description": "a section with links to your profiles",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "instagram": { "description": "a full link starting with https://, like https://instagram.com/kilnhour", "type": "string", "pattern": "^https?://\\S+$" },
+        "tiktok": { "description": "a full link starting with https://, like https://tiktok.com/@kilnhour", "type": "string", "pattern": "^https?://\\S+$" },
+        "youtube": { "description": "a full link starting with https://, like https://youtube.com/@kilnhour", "type": "string", "pattern": "^https?://\\S+$" },
+        "website": { "description": "a full link starting with https://, like https://kilnhour.example", "type": "string", "pattern": "^https?://\\S+$" }
+      }
+    },
+    "voice": {
+      "description": "a section describing how you sound",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tone": { "description": "a few words on how you sound, like \"warm, calm, a little nerdy\"", "type": "string", "minLength": 1 },
+        "do": { "description": "a list of things you always do, one per line starting with \"- \"", "type": "array", "items": { "description": "a short sentence", "type": "string", "minLength": 1 } },
+        "dont": { "description": "a list of things you never do, one per line starting with \"- \"", "type": "array", "items": { "description": "a short sentence", "type": "string", "minLength": 1 } },
+        "sample_caption": { "description": "one caption you have written or would write, in your own words", "type": "string", "minLength": 1 },
+        "words_per_second": { "description": "how fast captions and voice-over run: a number between 1.5 and 4 (2.5 is normal speech)", "type": "number", "minimum": 1.5, "maximum": 4 },
+        "cta_style": { "description": "one line on how you ask people to act, like \"soft: save it for your next clay night\"", "type": "string", "minLength": 1 }
+      }
+    },
+    "visual": {
+      "description": "a section with your five colours (and optional fonts and logo)",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["colors"],
+      "properties": {
+        "colors": {
+          "description": "a section with the five colours dark, light, primary, secondary and tertiary",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["dark", "light", "primary", "secondary", "tertiary"],
+          "properties": {
+            "dark": { "description": "a hex colour like #1B1714 (very dark: the deep background and text on light backgrounds)", "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+            "light": { "description": "a hex colour like #F6EFE6 (very light: the light background and text on dark backgrounds)", "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+            "primary": { "description": "a hex colour like #FF5A36 (bright: highlights and the call-to-action button)", "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+            "secondary": { "description": "a hex colour like #4F8A78 (mid-tone: wipes, progress bars, second accent)", "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+            "tertiary": { "description": "a hex colour like #3B2850 (deep and saturated: the stat and call-to-action background)", "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" }
+          }
+        },
+        "fonts": {
+          "description": "a section naming free fonts (Google Fonts) for display, body and mono",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "display": { "description": "a free font name for headlines, like Space Grotesk", "type": "string", "minLength": 1 },
+            "body": { "description": "a free font name for body text, like Inter", "type": "string", "minLength": 1 },
+            "mono": { "description": "a free monospace font name for labels, like JetBrains Mono", "type": "string", "minLength": 1 }
+          }
+        },
+        "logo": { "description": "a path to your logo file inside the brand folder, like brand/logo.svg", "type": "string", "pattern": "^[^\\s].*\\.(svg|png|jpg|jpeg|webp)$" },
+        "wordmark": {
+          "description": "a section with the text logo drawn top-left on reels: prefix (bold) and suffix (light)",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["prefix"],
+          "properties": {
+            "prefix": { "description": "the bold first part of the text logo, like KILN", "type": "string", "minLength": 1, "maxLength": 20 },
+            "suffix": { "description": "the light second part of the text logo, like HOUR (can be empty: \"\")", "type": "string", "maxLength": 20 }
+          }
+        },
+        "safe_zone": {
+          "description": "a section with margins in pixels (top, bottom, left, right) kept clear of text",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "top": { "description": "a whole number of pixels between 0 and 600", "type": "integer", "minimum": 0, "maximum": 600 },
+            "bottom": { "description": "a whole number of pixels between 0 and 600", "type": "integer", "minimum": 0, "maximum": 600 },
+            "left": { "description": "a whole number of pixels between 0 and 600", "type": "integer", "minimum": 0, "maximum": 600 },
+            "right": { "description": "a whole number of pixels between 0 and 600", "type": "integer", "minimum": 0, "maximum": 600 }
+          }
+        },
+        "end_card": {
+          "description": "a section with the last screen of every reel: line and button",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "line": { "description": "the short line on the last screen, like \"New clay night every Thursday\"", "type": "string", "minLength": 1, "maxLength": 60 },
+            "button": { "description": "the button text on the last screen, like \"Follow for more\"", "type": "string", "minLength": 1, "maxLength": 30 }
+          }
+        }
+      }
+    },
+    "references": {
+      "description": "a list of 3 to 5 accounts, videos or sites you like, each with url and why",
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "description": "an entry with url and why",
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["url", "why"],
+        "properties": {
+          "url": { "description": "a full link starting with https://", "type": "string", "pattern": "^https?://\\S+$" },
+          "why": { "description": "one line on what you like about it", "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "motion": {
+      "description": "a section with video settings: engine, aspect, fps",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "engine": { "description": "either remotion or hyperframes", "enum": ["remotion", "hyperframes"] },
+        "aspect": { "description": "one of \"9:16\", \"4:5\", \"1:1\" or \"16:9\" (keep the quotes)", "enum": ["9:16", "4:5", "1:1", "16:9"] },
+        "fps": { "description": "one of 24, 25, 30 or 60", "enum": [24, 25, 30, 60] },
+        "locked_terms": { "description": "a list of motion words you want to keep using, like \"spring pop\"", "type": "array", "items": { "description": "a short phrase", "type": "string", "minLength": 1 } },
+        "rejected_terms": { "description": "a list of motion words you never want, like \"glitch\"", "type": "array", "items": { "description": "a short phrase", "type": "string", "minLength": 1 } },
+        "music": { "description": "a path to a music file under public/ you hold the licence for, like audio/bed.mp3, or null for no music", "type": ["string", "null"], "pattern": "^[^\\s/].*\\.(mp3|wav|m4a|aac|ogg)$" }
+      }
+    },
+    "content": {
+      "description": "a section with your content plan: pillars, series, hook types, posting days",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pillars": { "description": "a list of 2 to 5 topics you always come back to", "type": "array", "maxItems": 5, "items": { "description": "a short topic", "type": "string", "minLength": 1 } },
+        "series": { "description": "a list of recurring formats, like \"Clay night in 60 seconds\"", "type": "array", "items": { "description": "a short series name", "type": "string", "minLength": 1 } },
+        "hook_types": { "description": "a list of opening styles you use, like \"mistake\" or \"before/after\"", "type": "array", "items": { "description": "a short hook type", "type": "string", "minLength": 1 } },
+        "posting_days": { "description": "a list of days, each one of mon, tue, wed, thu, fri, sat, sun", "type": "array", "uniqueItems": true, "items": { "description": "one of mon, tue, wed, thu, fri, sat, sun", "enum": ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] } },
+        "trial_reels": { "description": "true or false: post Instagram trial reels to non-followers first", "type": "boolean" }
+      }
+    },
+    "posting": {
+      "description": "a section with how videos get posted: provider and timezone",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "provider": { "description": "one of postiz-self (your own Postiz server), postiz-cloud (Postiz paid app) or native (post by hand in each app)", "enum": ["postiz-self", "postiz-cloud", "native"] },
+        "timezone": { "description": "a timezone name like Europe/Lisbon, America/New_York or UTC", "type": "string", "pattern": "^(UTC|[A-Z][A-Za-z_]+(/[A-Za-z0-9_+-]+){1,2})$" }
+      }
+    },
+    "site": {
+      "description": "a section for your website: domain, pages, offer, lead_magnet",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "domain": { "description": "a domain without https://, like kilnhour.example", "type": "string", "pattern": "^([a-z0-9-]+\\.)+[a-z]{2,}$" },
+        "pages": { "description": "a list of page names, like home, about, workshops", "type": "array", "items": { "description": "a short page name", "type": "string", "minLength": 1 } },
+        "offer": { "description": "one line on what you sell or offer", "type": "string", "minLength": 1 },
+        "lead_magnet": { "description": "one line on the free thing people get for their email", "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
