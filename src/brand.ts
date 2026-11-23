@@ -20,9 +20,9 @@ export interface Brand {
 }
 
 export const BRAND: Brand = {
-  name: "REELSMAKER DEMO",
-  handle: "@yourhandle",
-  mark: { prefix: "REELS", suffix: "MAKER" },
+  name: "CREATOR KIT DEMO",
+  handle: "@creatorkit",
+  mark: { prefix: "CREATOR", suffix: "KIT" },
   colors: {
     dark: "#0D0D12",
     light: "#F4F1EA",
