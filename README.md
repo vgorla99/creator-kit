@@ -18,6 +18,7 @@
   <a href="#quick-start">Quick start</a> ·
   <a href="#how-it-works">How it works</a> ·
   <a href="#posting">Posting</a> ·
+  <a href="#sites">Sites</a> ·
   <a href="#whats-inside">What's inside</a> ·
   <a href="#roadmap">Roadmap</a> ·
   <a href="docs/reels-remotion.md">Reels guide</a>
@@ -26,7 +27,7 @@
 ---
 
 > [!NOTE]
-> **Creator Kit v2 is being built in the open.** The Remotion reel engine works today and is documented below. Your brand lives in one file, [`brand/brand.yaml`](brand/brand.yaml). The HyperFrames studio, the site builder and the one-command setup are on the [roadmap](#roadmap).
+> **Creator Kit v2 is being built in the open.** The Remotion reel engine works today and is documented below. Your brand lives in one file, [`brand/brand.yaml`](brand/brand.yaml). The site builder lives in [`sites/`](#sites). The HyperFrames studio and the one-command setup are on the [roadmap](#roadmap).
 
 ## How it works
 
@@ -36,7 +37,7 @@
 
 1. **Describe once.** Name, voice, colours, fonts, content pillars and site details go in one brand file. Keys and tokens stay in `.env` and never in the brand file.
 2. **Make reels.** Write a script or a monthly plan. The kit renders 1080×1920 reels with captions, voice-over, music and a review sheet.
-3. **Make sites** *(v2)*. The same brand file drives a React + Vite + Tailwind site with SEO built in, ready for Cloudflare Pages.
+3. **Make sites**. The same brand file drives a React + Vite + Tailwind site with SEO built in, ready for Cloudflare Pages.
 
 Claude Code runs the steps for you and stops at the gates that need a human: approving a script, recording a voice, publishing a post.
 
@@ -96,6 +97,28 @@ Rendering never posts anything. When a reel is approved, schedule it one of thre
 | Postiz on your own small server | about €7–8/month, or €0 on a free-tier server | about 2 hours to set up, then one calendar | [Postiz self-hosted](docs/postiz-self-host.md) |
 | Postiz Cloud | from $29/month | 20 minutes, nothing to maintain | [Postiz Cloud](docs/postiz-cloud.md) |
 
+## Sites
+
+The same brand file builds a website: React + Vite + Tailwind, one real HTML page per URL, SEO built in, free hosting on Cloudflare Pages.
+
+<p align="center">
+  <img src="assets/readme/sites-home-desktop.png" alt="Home page of the example site for the invented brand Kiln Hour" width="70%">
+  <img src="assets/readme/sites-home-mobile.png" alt="The same home page on a phone" width="22%">
+</p>
+
+- **Pages:** home (hero, offer, proof, lead form and pop-up), about, contact, and a long-answer article that answers one real question in full.
+- **SEO pack:** sitemap, `robots.txt` that welcomes AI crawlers, `llms.txt`, JSON-LD structured data, titles, descriptions and share images. `npm run check-seo` checks all of it.
+- **Fast and accessible:** the example scores 100 on all four Lighthouse scores on mobile. Fonts are self-hosted, and motion switches off for visitors who ask for reduced motion.
+- **Two Claude Code skills:** `/niche-research` (competitors, long questions, answer gaps) and `/site-builder` (plan → your OK → build → SEO pack → launch, then a monthly Search Console check).
+
+```bash
+cd sites/template
+npm install
+npm run build && npm run check-seo
+```
+
+Step by step, for non-developers: **[Launching your website](docs/sites-launch.md)** (build, Cloudflare Pages, your domain, Search Console).
+
 ## What's inside
 
 | Path | What it is |
@@ -105,7 +128,9 @@ Rendering never posts anything. When a reel is approved, schedule it one of thre
 | `reels/studio-remotion/` | the Remotion reel studio: starter reel, footage engine, 10 animated blocks, captions, carousels, scripts |
 | `reels/content/` | what you post: ideas, ready, live, metrics, and month plans (`example/` renders on a fresh copy) |
 | `reels/sounds/` | how to get and index sound effects (the packs themselves stay on your computer) |
-| `docs/` | guides: reels, posting |
+| `sites/template/` | the website template: React + Vite + Tailwind, SEO scripts |
+| `sites/research/` | your niche research and monthly notes (stays on your computer) |
+| `docs/` | guides: reels, posting, site launch |
 | `assets/` | Creator Kit logo files and README images |
 
 ## Roadmap
@@ -119,7 +144,7 @@ Rendering never posts anything. When a reel is approved, schedule it one of thre
 - [ ] `broll-scout`: licence-logged B-roll from Pexels, Pixabay and Wikimedia
 - [ ] Local dashboard: plans, review, style, analytics
 - [ ] Posting guides: Postiz self-hosted, Postiz Cloud, native schedulers (written; self-host guide being tested on a fresh server)
-- [ ] `sites/`: React + Vite + Tailwind template, niche research, Cloudflare Pages deploy
+- [x] `sites/`: React + Vite + Tailwind template, niche research, Cloudflare Pages deploy
 
 ## Principles
 
