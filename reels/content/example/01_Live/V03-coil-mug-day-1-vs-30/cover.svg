@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" font-family="Space Grotesk, Inter, Arial, sans-serif">
+<rect width="1080" height="1920" fill="#3B2850"/>
+<circle cx="972" cy="230.39999999999998" r="345.6" fill="#E8743F" opacity=".12"/>
+<text x="86.4" y="230.39999999999998" font-size="39.96" letter-spacing="6" fill="#F6EFE6" opacity=".7">KILN<tspan fill="#E8743F">HOUR</tspan></text>
+<text x="86.4" y="300.4" font-size="32.4" fill="#F6EFE6" opacity=".55">Clay night in 60 seconds</text>
+<text x="86.4" y="661.1999999999999" font-size="132" font-weight="700" fill="#F6EFE6">DAY 1</text><text x="86.4" y="799.8" font-size="132" font-weight="700" fill="#F6EFE6">VS</text><text x="86.4" y="938.3999999999999" font-size="132" font-weight="700" fill="#E8743F">DAY 30</text><g transform="translate(669.6 1267.2)"><path d="M0 0 C -40 0 -70 40 -70 110 C -70 200 -20 250 70 250 C 160 250 210 200 210 110 C 210 40 180 0 140 0 Z" fill="#E8743F" opacity=".9"/><ellipse cx="70" cy="0" rx="72" ry="16" fill="#F6EFE6" opacity=".25"/></g>
+</svg>

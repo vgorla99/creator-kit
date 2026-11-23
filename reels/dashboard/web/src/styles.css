@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+/* Brand colours: defaults here, replaced at runtime from brand/brand.yaml (see App.tsx). */
+@theme {
+  --color-brand: #e8743f;
+  --color-brand-ink: #1b1714;
+  --color-brand-2: #5e8f7e;
+  --color-brand-3: #3b2850;
+  --color-keep: #7fd39a;
+}
+
+@layer base {
+  :focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; }
+  button:not(:disabled), [role="button"] { cursor: pointer; }
+}
+
+@utility btn {
+  @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-stone-700 bg-stone-800 px-3 text-sm font-medium text-stone-100 transition-colors hover:border-stone-500 disabled:cursor-default disabled:opacity-50;
+}
+@utility btn-brand {
+  @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-brand px-4 text-sm font-semibold text-brand-ink transition-opacity hover:opacity-90 disabled:cursor-default disabled:opacity-50;
+}
+@utility field {
+  @apply min-h-10 rounded-lg border border-stone-700 bg-stone-900 px-3 text-sm text-stone-100 placeholder:text-stone-500;
+}
+@utility box {
+  @apply rounded-xl border border-stone-800 bg-stone-900 p-4;
+}
+
+/* Style tab: example-round previews drawn in CSS (from the Style Lab format by Shaan Johari). */
+.ex { container-type: inline-size; }
+.ex-word { font-size: clamp(18px, 12cqw, 56px); }
+.ex-pop .ex-word { animation: ex-pop 2.4s cubic-bezier(.3, 1.5, .5, 1) infinite; }
+@keyframes ex-pop { 0% { transform: scale(.4); opacity: 0; } 18%, 85% { transform: scale(1); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }
+.ex-slide .ex-word { animation: ex-slide 2.4s cubic-bezier(.2, .9, .2, 1) infinite; }
+@keyframes ex-slide { 0% { transform: translateY(40%); opacity: 0; } 25%, 85% { transform: none; opacity: 1; } 100% { opacity: 0; } }
+.ex-typed .ex-word { white-space: nowrap; border-right: 2px solid currentColor; padding-right: 2px; clip-path: inset(0 100% 0 0); animation: ex-typed 2.6s steps(9) infinite; }
+@keyframes ex-typed { 0% { clip-path: inset(0 100% 0 0); } 55%, 90% { clip-path: inset(0 0 0 0); } 100% { clip-path: inset(0 100% 0 0); } }
+@media (prefers-reduced-motion: reduce) { .ex * { animation: none !important; clip-path: none !important; } }

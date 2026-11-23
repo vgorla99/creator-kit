@@ -42,6 +42,10 @@ reels/content/**/*.webp
 sites/research/*
 !sites/research/README.md
 
+# Style rounds: previews, ratings and submissions stay local.
+reels/style/*
+!reels/style/README.md
+
 # Setup: third-party skills are installed from their own repos (setup/skills.lock.yaml),
 # never committed. Only Creator Kit's own skills are tracked.
 .claude/skills/*
@@ -53,6 +57,7 @@ sites/research/*
 !.claude/skills/reel-pipeline/
 !.claude/skills/post-video/
 !.claude/skills/content-calendar-from-analytics/
+!.claude/skills/broll-scout/
 .claude/settings.local.json
 .claude/worktrees/
 setup/.cache/
