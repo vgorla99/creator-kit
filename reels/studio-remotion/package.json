@@ -20,7 +20,8 @@
     "publora": "node scripts/publora.mjs",
     "check:captions": "node scripts/check-captions.mjs",
     "broll": "node scripts/broll.mjs",
-    "check:stock": "node scripts/check-stock.mjs"
+    "check:stock": "node scripts/check-stock.mjs",
+    "smoke": "remotion still src/index.ts Starter out/smoke.png --frame=60"
   },
   "dependencies": {
     "@fontsource/jetbrains-mono": "5.3.0",

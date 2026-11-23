@@ -12,6 +12,7 @@
     "reels/studio-remotion"
   ],
   "scripts": {
+    "doctor": "node setup/doctor.mjs",
     "brand:check": "node scripts/brand-check.mjs",
     "start": "npm run start -w reels/studio-remotion",
     "starter": "npm run reel -w reels/studio-remotion -- Starter",
@@ -27,7 +28,8 @@
     "fonts": "npm run fonts -w reels/studio-remotion",
     "typecheck": "npm run typecheck -w reels/studio-remotion",
     "check:captions": "npm run check:captions -w reels/studio-remotion",
-    "check:stock": "npm run check:stock -w reels/studio-remotion"
+    "check:stock": "npm run check:stock -w reels/studio-remotion",
+    "smoke": "npm run smoke -w reels/studio-remotion"
   },
   "dependencies": {
     "ajv": "^8.20.0",
