@@ -32,6 +32,18 @@ const atLeast = (v, major, minor) => v !== null && (v[0] > major || (v[0] === ma
 /** @param {string} name @param {string} win @param {string} mac */
 const install = (name, win, mac) => `Run the setup again (${SETUP}): it installs ${name}. Or install it yourself: ${WIN ? win : mac}`;
 
+/** Names of the keys in .env that have a value. The values are never returned or printed. */
+function keysSet() {
+  const file = join(REPO, ".env");
+  if (!existsSync(file)) return new Set();
+  const names = readFileSync(file, "utf8")
+    .split(/\r?\n/)
+    .map((line) => /^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/.exec(line))
+    .filter((m) => m !== null && m[2] !== "" && m[2] !== '""' && m[2] !== "''")
+    .map((m) => m?.[1] ?? "");
+  return new Set(names);
+}
+
 function readChoices() {
   const file = join(REPO, "setup", ".choices.json");
   if (!existsSync(file)) return { parts: [], engine: "" };
@@ -51,8 +63,8 @@ function checks() {
   /** @type {Check[]} */
   const list = [
     {
-      name: "Node.js 22 or newer",
-      check: () => ({ ok: atLeast(version(process.versions.node), 22, 0), detail: `you have ${process.versions.node}` }),
+      name: "Node.js 22.18 or newer",
+      check: () => ({ ok: atLeast(version(process.versions.node), 22, 18), detail: `you have ${process.versions.node}` }),
       fix: install("Node.js", "winget install OpenJS.NodeJS.LTS", "brew install node"),
     },
     {
@@ -126,6 +138,54 @@ function checks() {
       },
       fix: `Run the setup again (${SETUP}), or run \`npm ci\` in this folder.`,
     });
+    list.push({
+      name: "Dashboard installed (npm run dashboard)",
+      check: () => {
+        const ok = existsSync(join(REPO, "reels", "dashboard", "node_modules", "vite"));
+        return { ok, detail: ok ? "found" : "missing" };
+      },
+      fix: `Run the setup again (${SETUP}), or just run \`npm run dashboard\`: it installs itself the first time.`,
+    });
+    list.push({
+      name: "Stock video keys for /broll-scout (optional)",
+      check: () => {
+        const set = keysSet();
+        const say = (/** @type {string} */ k) => `${k} ${set.has(k) ? "set" : "not set"}`;
+        // Optional: Wikimedia Commons and your own footage work without keys.
+        return { ok: true, detail: `${say("PEXELS_API_KEY")}, ${say("PIXABAY_API_KEY")}; values not shown` };
+      },
+      fix: "",
+    });
+    if (choices.engine === "hyperframes") {
+      const studio = join(REPO, "reels", "studio-hyperframes");
+      list.push({
+        name: "HyperFrames studio installed",
+        check: () => {
+          const ok = existsSync(join(studio, "node_modules", "hyperframes"));
+          return { ok, detail: ok ? "found" : "missing" };
+        },
+        fix: `Run the setup again (${SETUP}), or run \`npm run hf:check\`: it installs the studio the first time.`,
+      });
+      list.push({
+        name: "HyperFrames can render (Chrome, FFmpeg)",
+        check: () => {
+          if (!existsSync(join(studio, "node_modules", "hyperframes"))) return { ok: false, detail: "studio not installed" };
+          const r = run("npx", ["hyperframes", "doctor", "--json"], studio);
+          /** @type {{ checks?: { name: string, ok: boolean }[] }} */
+          let report = {};
+          try {
+            report = JSON.parse(r.out.slice(r.out.indexOf("{")));
+          } catch {
+            return { ok: false, detail: "no answer from `hyperframes doctor`" };
+          }
+          // Its other checks (Docker, local voice and music models) are optional extras.
+          const needed = ["Node.js", "FFmpeg", "FFprobe", "Chrome"];
+          const bad = needed.filter((n) => !(report.checks ?? []).some((c) => c.name === n && c.ok));
+          return { ok: bad.length === 0, detail: bad.length ? `missing: ${bad.join(", ")}` : needed.join(", ") };
+        },
+        fix: "Run `npm run hf:smoke` once (it downloads the browser that renders). If FFmpeg is missing, run the setup again.",
+      });
+    }
   }
   if (choices.parts.includes("sites")) {
     list.push({

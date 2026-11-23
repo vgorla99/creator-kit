@@ -125,6 +125,16 @@ skills:
     engine: hyperframes
     why: ready-made HyperFrames blocks
 
+  - name: media-use
+    repo: https://github.com/heygen-com/hyperframes
+    path: skills/media-use
+    commit: 8c31cb3f400b20710ff76fda53354d7abfd6faca
+    licence: Apache-2.0
+    required: true
+    for: reels
+    engine: hyperframes
+    why: footage, voice, music and grades in HyperFrames (the hyperframes skill hands media work to it)
+
   # Optional (setup asks)
   - name: anatomy
     repo: https://github.com/wheresryan22/anatomy

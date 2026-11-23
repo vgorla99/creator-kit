@@ -29,7 +29,13 @@
     "typecheck": "npm run typecheck -w reels/studio-remotion",
     "check:captions": "npm run check:captions -w reels/studio-remotion",
     "check:stock": "npm run check:stock -w reels/studio-remotion",
-    "smoke": "npm run smoke -w reels/studio-remotion"
+    "smoke": "npm run smoke -w reels/studio-remotion",
+    "dashboard": "node scripts/run-in.mjs reels/dashboard start",
+    "hf:preview": "node scripts/run-in.mjs reels/studio-hyperframes preview",
+    "hf:render": "node scripts/run-in.mjs reels/studio-hyperframes render",
+    "hf:check": "node scripts/run-in.mjs reels/studio-hyperframes check",
+    "hf:snapshot": "node scripts/run-in.mjs reels/studio-hyperframes snapshot",
+    "hf:smoke": "node scripts/run-in.mjs reels/studio-hyperframes smoke"
   },
   "dependencies": {
     "ajv": "^8.20.0",

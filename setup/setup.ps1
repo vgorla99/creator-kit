@@ -20,6 +20,8 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+# HyperFrames sends anonymous usage data unless this is set; the kit keeps it off.
+if (-not $env:HYPERFRAMES_NO_TELEMETRY) { $env:HYPERFRAMES_NO_TELEMETRY = '1' }
 $Repo = Split-Path -Parent $PSScriptRoot
 Set-Location $Repo
 
@@ -101,7 +103,7 @@ function Test-Python {
 
 # name, winget id, test
 $Tools = @(
-    @{ Name = 'Node.js (LTS)'; Id = 'OpenJS.NodeJS.LTS'; Test = { Test-MinVersion (Get-ToolVersion 'node' @('--version')) 22 0 } },
+    @{ Name = 'Node.js (LTS)'; Id = 'OpenJS.NodeJS.LTS'; Test = { Test-MinVersion (Get-ToolVersion 'node' @('--version')) 22 18 } },
     @{ Name = 'Python 3.13'; Id = 'Python.Python.3.13'; Test = { Test-Python } },
     @{ Name = 'uv'; Id = 'astral-sh.uv'; Test = { [bool](Get-ToolVersion 'uv' @('--version')) } },
     @{ Name = 'ffmpeg'; Id = 'Gyan.FFmpeg'; Test = { [bool](Get-ToolVersion 'ffmpeg' @('-version')) } },
@@ -159,7 +161,11 @@ if ($Missing.Count -gt 0) {
     Write-Log '  Programs: Node.js, Python, uv, ffmpeg, Git and GitHub CLI are already installed.'
 }
 Write-Log '  Install the kit''s packages (npm ci):'
-if ($WantReels) { Write-Log '    - reel studio (Remotion, about 400 MB)' } else { Write-Log '    - brand checker' }
+if ($WantReels) {
+    Write-Log '    - reel studio (Remotion, about 400 MB)'
+    if ($Engine -eq 'hyperframes') { Write-Log '    - HyperFrames studio (reels/studio-hyperframes, about 60 MB)' }
+    Write-Log '    - dashboard (reels/dashboard: review, calendar, numbers)'
+} else { Write-Log '    - brand checker' }
 if ($WantSites) { Write-Log '    - website template (sites/template)' }
 Write-Log ('  Download the skills for ' + ($PartList -join ' + ') + $(if ($WantReels) { ' (' + $Engine + ')' } else { '' }) + ' from their own GitHub pages,')
 Write-Log '    at the exact versions in setup\skills.lock.yaml, into .claude\skills\'
@@ -194,6 +200,12 @@ if ($Missing.Count -gt 0) {
 $NpmFix = 'Check your internet connection and run the setup again.'
 if ($WantReels) {
     [void](Invoke-Step 'Installing the reel studio packages' 'npm' @('ci', '--no-audit', '--no-fund') $NpmFix)
+    $Packages = @(,@('Installing the dashboard packages', 'reels\dashboard'))
+    if ($Engine -eq 'hyperframes') { $Packages += ,@('Installing the HyperFrames studio packages', 'reels\studio-hyperframes') }
+    foreach ($p in $Packages) {
+        Push-Location (Join-Path $Repo $p[1])
+        try { [void](Invoke-Step $p[0] 'npm' @('ci', '--no-audit', '--no-fund') $NpmFix) } finally { Pop-Location }
+    }
 } else {
     # Sites only: the root packages without the reel studio.
     [void](Invoke-Step 'Installing the brand checker' 'npm' @('ci', '--workspaces=false', '--no-audit', '--no-fund') $NpmFix)
@@ -214,6 +226,15 @@ foreach ($dir in @('.', 'sites\template')) {
         Write-Log ('Created ' + $(if ($dir -eq '.') { '.env' } else { $dir + '\.env' }) + ' (empty keys; add yours later, every key is optional).')
     }
 }
+if ($WantReels) {
+    Write-Log ''
+    Write-Log 'Optional keys in .env (open it in Notepad; paste a key after the = sign, nothing else):'
+    Write-Log '  PEXELS_API_KEY   free stock video for /broll-scout: https://www.pexels.com/api/'
+    Write-Log '  PIXABAY_API_KEY  more free stock video for /broll-scout: https://pixabay.com/api/docs/'
+    Write-Log '                   (Wikimedia Commons needs no key; your own footage needs none)'
+    Write-Log '  POSTIZ_API_KEY   lets the dashboard show your Postiz queue and numbers'
+    Write-Log '  Check which keys are set at any time: npm run doctor (it never shows the keys).'
+}
 
 # ---------------------------------------------------------------- skills
 
@@ -227,15 +248,18 @@ if ($Optional) { $skillArgs += @('--optional', $Optional) }
 
 # ---------------------------------------------------------------- checks
 
+# The test picture comes first: it downloads the browser that renders, which the health check looks for.
+$SmokeFix = 'The first render downloads a small browser; check your internet connection and run the setup again.'
+if ($WantReels -and $Engine -eq 'hyperframes') {
+    [void](Invoke-Step 'Test picture (one frame of the HyperFrames starter reel)' 'npm' @('run', 'hf:smoke') $SmokeFix)
+    Write-Log '   Saved: reels\studio-hyperframes\out\smoke'
+} elseif ($WantReels) {
+    [void](Invoke-Step 'Test picture (renders one frame of the starter reel)' 'npm' @('run', 'smoke') $SmokeFix)
+    Write-Log '   Saved: reels\studio-remotion\out\smoke.png'
+}
+
 $Healthy = Invoke-Step 'Health check' 'node' @('setup\doctor.mjs') '' -AllowFail
 
-if ($WantReels) {
-    [void](Invoke-Step 'Test picture (renders one frame of the starter reel)' 'npm' @('run', 'smoke') 'The first render downloads a small browser; check your internet connection and run the setup again.')
-    Write-Log '   Saved: reels\studio-remotion\out\smoke.png'
-    if ($Engine -eq 'hyperframes') {
-        Write-Log '   Note: the HyperFrames starter is coming in a later version. Until then your reels use the Remotion studio with your brand.'
-    }
-}
 if ($WantSites) {
     Push-Location (Join-Path $Repo 'sites\template')
     try {
@@ -256,7 +280,8 @@ Write-Log '================================================'
 Write-Log 'Next:'
 Write-Log '  1. Open Claude Code in this folder (type "claude" here, or use the desktop app).'
 Write-Log '  2. Type /brand-intake and answer the questions. It makes the kit yours.'
-if ($WantReels) { Write-Log '  3. Then: npm run starter   (your first reel, in your colours)' }
+if ($WantReels -and $Engine -eq 'hyperframes') { Write-Log '  3. Then: npm run hf:render   (your first reel, in your colours; npm run hf:preview to watch it)' } elseif ($WantReels) { Write-Log '  3. Then: npm run starter   (your first reel, in your colours)' }
+if ($WantReels) { Write-Log '     Your dashboard: npm run dashboard, then open http://localhost:5180' }
 if ($WantSites) { Write-Log '  3. Then: ask Claude to run /site-builder   (your website)' }
 Write-Log ''
 Write-Log ('Log saved to ' + $Log)
