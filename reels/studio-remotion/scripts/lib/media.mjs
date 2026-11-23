@@ -1,16 +1,20 @@
-// Shared helpers for the library / Pexels scripts: Remotion's bundled
+// Shared helpers for the scripts: folder paths, Remotion's bundled
 // ffmpeg + ffprobe, the manifest, contact sheets and .env.
 
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, extname, join } from "node:path";
+import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 
-export const ROOT = dirname(dirname(dirname(fileURLToPath(import.meta.url))));
+export const ROOT = dirname(dirname(dirname(fileURLToPath(import.meta.url)))); // reels/studio-remotion
+export const REPO = dirname(dirname(ROOT)); // the Creator Kit folder (brand/, .env, reels/)
+export const CONTENT = join(REPO, "reels", "content"); // month plans: reels/content/<month>/plan.json
 export const LIBRARY = join(ROOT, "public", "library");
 export const MANIFEST = join(ROOT, "assets", "manifest.json");
-const CLI = join(ROOT, "node_modules", "@remotion", "cli", "remotion-cli.js");
+// npm workspaces may install packages one or two folders up, so ask Node where the CLI is.
+export const CLI = join(dirname(createRequire(import.meta.url).resolve("@remotion/cli/package.json")), "remotion-cli.js");
 
 export const VIDEO_EXT = new Set([".mp4", ".mov", ".webm"]);
 export const IMAGE_EXT = new Set([".jpg", ".jpeg", ".png", ".webp"]);
@@ -86,14 +90,23 @@ export function contactSheet(rows, out) {
   if (res.status !== 0) die("contact sheet failed (needs uv: https://docs.astral.sh/uv/)");
 }
 
-// KEY=value lines from .env (no quotes/expansion needed here).
+// KEY=value lines from the .env next to brand/ (no quotes/expansion needed here).
 export function env(key) {
   if (process.env[key]) return process.env[key];
-  const file = join(ROOT, ".env");
+  const file = join(REPO, ".env");
   if (!existsSync(file)) return "";
   for (const line of readFileSync(file, "utf8").split(/\r?\n/)) {
     const m = /^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/.exec(line);
     if (m && m[1] === key) return m[2].replace(/^["']|["']$/g, "");
   }
   return "";
+}
+
+// brand/brand.yaml, checked like `npm run brand:check` (stops with the same plain-English list).
+export async function readBrand() {
+  const { checkBrand } = await import("../../../../schema/validate-brand.mjs");
+  const schema = JSON.parse(readFileSync(join(REPO, "schema", "brand.schema.json"), "utf8"));
+  const result = checkBrand(readFileSync(join(REPO, "brand", "brand.yaml"), "utf8"), schema);
+  if (!result.ok) die(`brand/brand.yaml needs fixing:\n  • ${result.errors.join("\n  • ")}\n(Run \`npm run brand:check\` for the same list.)`);
+  return result.brand;
 }

@@ -2,7 +2,7 @@
 // brand/brand.yaml via src/brand.ts (five roles), contrast-checked at load time.
 
 import { BRAND } from "../brand";
-import { contrast } from "../../schema/validate-brand.mjs";
+import { contrast } from "../../../../schema/validate-brand.mjs";
 
 export { BRAND };
 

@@ -1,14 +1,14 @@
 // ─────────────────────────────────────────────────────────────
-//  Don't edit this file to rebrand: edit brand/brand.yaml (or run
+//  Don't edit this file to rebrand: edit brand/brand.yaml at the top of Creator Kit (or run
 //  /brand-intake in Claude Code). This file reads that yaml when Studio
 //  or a render starts, checks it against schema/brand.schema.json and the
 //  colour-contrast rules, and stops with a plain-English list of fixes if
 //  anything is wrong. Same checks as `npm run brand:check`.
 // ─────────────────────────────────────────────────────────────
 
-import raw from "../brand/brand.yaml";
-import schema from "../schema/brand.schema.json";
-import { checkBrand, type BrandFile, type ColorRole, type Hex } from "../schema/validate-brand.mjs";
+import raw from "../../../brand/brand.yaml";
+import schema from "../../../schema/brand.schema.json";
+import { checkBrand, type BrandFile, type ColorRole, type Hex } from "../../../schema/validate-brand.mjs";
 
 export interface Brand {
   name: string; // bottom-right on every frame

@@ -71,7 +71,7 @@ export const Bars: React.FC<{ f: number; s: number; items: readonly { label: str
   );
 };
 
-// ── Glass focus: a card of rows, a gold highlight walks down them ──────
+// ── Glass focus: a card of rows, an accent highlight walks down them ──────
 const FOCUS = { top: 1030, rowH: 86, pad: 22 };
 
 export const Focus: React.FC<{ f: number; s: number; out: number; rows: readonly { label: string; value: string }[] }> = ({ f, s, out, rows }) => {
@@ -132,7 +132,7 @@ export const Focus: React.FC<{ f: number; s: number; out: number; rows: readonly
   );
 };
 
-// ── Flowing paths: sources on the left draw curves into one gold node ──
+// ── Flowing paths: sources on the left draw curves into one accent node ──
 const FLOW = { top: 1030, h: 300, srcL: PANEL.x, srcR: 400, dstL: 640, dstR: W - PANEL.x, nodeH: 80 };
 
 type P = [number, number];
@@ -142,7 +142,7 @@ function bez(t: number, a: P, b: P, c: P, d: P): P {
   return [k[0] * a[0] + k[1] * b[0] + k[2] * c[0] + k[3] * d[0], k[0] * a[1] + k[1] * b[1] + k[2] * c[1] + k[3] * d[1]];
 }
 
-const Node: React.FC<{ x: number; y: number; w: number; text: string; gold: boolean; p: number }> = ({ x, y, w, text, gold, p }) => (
+const Node: React.FC<{ x: number; y: number; w: number; text: string; accent: boolean; p: number }> = ({ x, y, w, text, accent, p }) => (
   <div
     style={{
       position: "absolute",
@@ -156,17 +156,17 @@ const Node: React.FC<{ x: number; y: number; w: number; text: string; gold: bool
       justifyContent: "center",
       gap: 14,
       fontFamily: FONT.display,
-      fontWeight: gold ? 700 : 500,
-      fontSize: gold ? 38 : 34,
-      color: gold ? C.dark : C.light,
-      background: gold ? C.primary : `${C.tertiary}E6`,
-      border: gold ? "none" : `2px solid ${C.light}33`,
-      boxShadow: gold ? `0 0 40px ${C.primary}66` : "none",
+      fontWeight: accent ? 700 : 500,
+      fontSize: accent ? 38 : 34,
+      color: accent ? C.dark : C.light,
+      background: accent ? C.primary : `${C.tertiary}E6`,
+      border: accent ? "none" : `2px solid ${C.light}33`,
+      boxShadow: accent ? `0 0 40px ${C.primary}66` : "none",
       opacity: Math.min(1, p * 2),
       transform: `scale(${0.6 + 0.4 * p})`,
     }}
   >
-    {gold ? null : <span style={{ width: 14, height: 14, borderRadius: 7, background: C.primary }} />}
+    {accent ? null : <span style={{ width: 14, height: 14, borderRadius: 7, background: C.primary }} />}
     {text}
   </div>
 );
@@ -213,9 +213,9 @@ export const Flow: React.FC<{ f: number; s: number; from: readonly string[]; to:
         ))}
       </svg>
       {from.map((txt, k) => (
-        <Node key={txt} x={FLOW.srcL} y={ys[k]} w={FLOW.srcR - FLOW.srcL} text={txt} gold={false} p={springIn(f, s + ENTER + 6 * k)} />
+        <Node key={txt} x={FLOW.srcL} y={ys[k]} w={FLOW.srcR - FLOW.srcL} text={txt} accent={false} p={springIn(f, s + ENTER + 6 * k)} />
       ))}
-      <Node x={FLOW.dstL} y={cy} w={FLOW.dstR - FLOW.dstL} text={to} gold p={land} />
+      <Node x={FLOW.dstL} y={cy} w={FLOW.dstR - FLOW.dstL} text={to} accent p={land} />
     </>
   );
 };
@@ -294,7 +294,7 @@ export const Tabs: React.FC<{ f: number; s: number; out: number; tabs: readonly 
   );
 };
 
-// ── Ruler: a scale draws in, a gold range grows, a bubble names it ─────
+// ── Ruler: a scale draws in, an accent range grows, a bubble names it ─────
 const RULER = { x0: 130, x1: 950, y: 1250 };
 
 export const Ruler: React.FC<{ f: number; s: number; min: number; max: number; mark: readonly [number, number]; label: string; unit: string }> = ({

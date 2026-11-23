@@ -18,8 +18,19 @@
 // src/kit/theme.ts, then run `npm run fonts`.
 
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+
+const require = createRequire(import.meta.url);
+// npm workspaces may install the font packages one or two folders up; ask Node where they are.
+const fontFile = (pkg, file) => {
+  try {
+    return require.resolve(`${pkg}/files/${file}`);
+  } catch {
+    return "";
+  }
+};
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 
@@ -33,8 +44,8 @@ const FONTS = [
 let css = "";
 let ok = 0;
 for (const f of FONTS) {
-  const src = join(root, "node_modules", f.pkg, "files", f.file);
-  if (!existsSync(src)) {
+  const src = fontFile(f.pkg, f.file);
+  if (!src || !existsSync(src)) {
     console.warn(`[fonts] skipped ${f.pkg}/files/${f.file} — not found (is ${f.pkg} installed?)`);
     continue;
   }

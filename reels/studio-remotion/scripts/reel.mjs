@@ -3,20 +3,13 @@
 // ffprobe, then renders the review sheet out/<ReelId>-review.png.
 
 import { spawnSync } from "node:child_process";
-import { existsSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
+import { CLI as cli, ROOT as root } from "./lib/media.mjs";
 
-const root = dirname(dirname(fileURLToPath(import.meta.url)));
-const cli = join(root, "node_modules", "@remotion", "cli", "remotion-cli.js");
 const [id, flag] = process.argv.slice(2);
 
 if (!id || !/^[A-Za-z0-9-]+$/.test(id)) {
-  console.error("Usage: npm run reel -- <ReelId> [--review-only]   (e.g. LiftForLater)");
-  process.exit(1);
-}
-if (!existsSync(cli)) {
-  console.error("Remotion CLI not found — run `npm install` first.");
+  console.error("Usage: npm run reel -- <ReelId> [--review-only]   (e.g. Starter)");
   process.exit(1);
 }
 
@@ -53,4 +46,5 @@ if (flag !== "--review-only") {
 }
 
 remotion(["still", "src/index.ts", `${id}-Review`, png, "--frame=0"]);
-console.log(`\n✔ ${flag === "--review-only" ? "" : `${mp4}  +  `}${png}`);
+const where = (p) => join("reels", "studio-remotion", p);
+console.log(`\n✔ ${flag === "--review-only" ? "" : `${where(mp4)}  +  `}${where(png)}`);

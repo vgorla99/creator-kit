@@ -10,7 +10,7 @@
 
 import { existsSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { ROOT, die, env } from "./lib/media.mjs";
+import { CONTENT, ROOT, die, env } from "./lib/media.mjs";
 
 const API = "https://api.publora.com/api/v1";
 const MAX_PENDING = 3;
@@ -61,11 +61,11 @@ async function pending() {
 }
 
 async function schedule(month, ids) {
-  const plan = JSON.parse(readFileSync(join(ROOT, "content", month, "plan.json"), "utf8"));
+  const plan = JSON.parse(readFileSync(join(CONTENT, month, "plan.json"), "utf8"));
   const tz = plan.defaults.timezone ?? "UTC";
   const manifest = JSON.parse(readFileSync(join(ROOT, "assets", "manifest.json"), "utf8"));
   const ai = new Set(manifest.assets.filter((a) => a.ai).map((a) => a.id));
-  const ledgerPath = join(ROOT, "content", month, "schedule.json");
+  const ledgerPath = join(CONTENT, month, "schedule.json");
   const ledger = existsSync(ledgerPath) ? JSON.parse(readFileSync(ledgerPath, "utf8")) : {};
   const platform = await tiktokId();
   let queued = (await pending()).length;

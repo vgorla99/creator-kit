@@ -38,7 +38,7 @@ export interface PlanFile {
 export type VoMap = Readonly<Record<string, { src: string; lines: readonly { from: number; to: number }[]; music?: string }>>;
 
 const KIND = new Map((manifest.assets as { id: string; kind: string }[]).map((a) => [a.id, a.kind]));
-const STAGES = ["dark", "navy", "teal", "navy", "dark"] as const;
+const STAGES = ["dark", "deep", "mid", "deep", "dark"] as const;
 const FRAMES = { hook: 100, beat: 90, rows: 130, cta: 100 } as const;
 
 const pair = (t: readonly string[] | undefined, where: string): readonly [string, string] => {
@@ -46,7 +46,7 @@ const pair = (t: readonly string[] | undefined, where: string): readonly [string
   return [t[0], t[1]];
 };
 
-// A headline as one string; a word broken over the two lines ("WOCHEN-" / "PLAN") is rejoined.
+// A headline as one string; a word broken over the two lines ("WEEK-" / "PLAN") is rejoined.
 const headText = (t: readonly string[]) => t.join("\n").replace(/-\n/g, "").replace(/\n/g, " ");
 
 // "2026-10" + "V01" -> "2610-V01" (a valid, month-unique composition id)

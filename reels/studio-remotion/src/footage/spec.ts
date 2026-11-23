@@ -15,7 +15,7 @@ export type Shot =
   // A still in public/ (or a library asset id), animated with a slow Ken Burns push.
   | { kind: "image"; src: string; zoom?: "in" | "out"; pan?: "left" | "right" | "up" | "down" | "none" }
   // No footage: a brand-colour stage (Line 2 "Motion" reels). All tones take light text.
-  | { kind: "stage"; tone: "dark" | "navy" | "teal" };
+  | { kind: "stage"; tone: "dark" | "deep" | "mid" }; // dark · tertiary · dark+secondary
 
 export interface Row {
   label: string;
@@ -28,7 +28,7 @@ export type Block =
   | { type: "stat"; value: string; label: string } // a big number that counts up
   | { type: "list"; items: readonly string[] } // 2–5 short items
   | { type: "compare"; left: { title: string; items: readonly string[] }; right: { title: string; items: readonly string[] } }
-  | { type: "verdict"; verdict: "MYTHOS" | "FAKT" | "GIFTIG" } // a stamp
+  | { type: "verdict"; verdict: "MYTH" | "FACT" | "AVOID" } // a stamp
   | { type: "jar"; label?: string; sub?: string } // a product packshot (brand mark + label band), built out of the dot
   // Motion library. Numbers must be real (label / script), never invented.
   | { type: "bars"; items: readonly { label: string; value: number; unit?: string }[] } // 2–4 bars that grow + count up
@@ -40,7 +40,7 @@ export type Block =
 export interface Beat {
   shot: Shot;
   frames: number; // minimum length; a longer VO line stretches the beat
-  title: readonly [string, string]; // line 1 light, line 2 gold
+  title: readonly [string, string]; // line 1 light, line 2 accent
   note?: string; // typewriter caption in the safe zone
   rows?: readonly Row[]; // optional panel (max 3 rows), the dot marks each row
   block?: Block;
@@ -55,7 +55,7 @@ export interface Cta {
 }
 
 export interface FootageSpec {
-  id: string; // Remotion composition id, e.g. "Okt26-V01"
+  id: string; // Remotion composition id, e.g. "2601-V01"
   beats: readonly Beat[]; // beats[0] is the hook
   cta: Cta;
   vo?: { src: string; lines: readonly VoLine[] }; // one line per beat + one for the CTA, in order

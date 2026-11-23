@@ -1,4 +1,4 @@
-// The protagonist of every footage reel: a gold dot that drops in on the
+// The protagonist of every footage reel: an accent dot that drops in on the
 // hook, hops to a resting spot in each beat (or marks each panel row), opens
 // every next clip out of itself, and finally becomes the CTA button.
 

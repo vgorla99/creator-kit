@@ -4,14 +4,14 @@
 
 import React from "react";
 import { BRAND } from "../brand";
-import { ease, prog, springIn } from "../kit/anim";
+import { ease, mix, prog, springIn } from "../kit/anim";
 import { C, FONT } from "../kit/theme";
 import { BLOCK_TOP, JAR_BIG, JAR_SMALL, PANEL } from "./layout";
 import { Bars, ENTER, Flow, Focus, Ruler, Tabs } from "./MotionBlocks";
 import type { Block } from "./spec";
 
 const PILL = { h: 76, gap: 18 };
-const VERDICT_INK = { MYTHOS: C.primary, FAKT: "#7FD6A3", GIFTIG: "#FF6B6B" } as const;
+const VERDICT_INK = { MYTH: C.primary, FACT: "#7FD6A3", AVOID: "#FF6B6B" } as const;
 
 const exitOf = (f: number, out: number) => 1 - prog(f, out - 8, out + 6, ease.inOutCubic);
 
@@ -231,8 +231,8 @@ export const BlockView: React.FC<{ f: number; s: number; out: number; block: Blo
   );
 };
 
-// Stage backgrounds for footage-free beats: a tone, a soft light pool and slow gold rings.
-const TONES = { dark: C.dark, navy: C.tertiary, teal: "#2C5563" } as const;
+// Stage backgrounds for footage-free beats: a tone, a soft light pool and slow accent rings.
+const TONES = { dark: C.dark, deep: C.tertiary, mid: mix(C.dark, C.secondary, 0.55) } as const;
 
 export const StageView: React.FC<{ tone: keyof typeof TONES; f: number }> = ({ tone, f }) => {
   const base = TONES[tone];

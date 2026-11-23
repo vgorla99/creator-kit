@@ -118,7 +118,7 @@ const Scrims: React.FC<{ f: number; ctaAt: number }> = ({ f, ctaAt }) => {
   );
 };
 
-// A gold ring rides the edge of each opening shot.
+// An accent ring rides the edge of each opening shot.
 const IrisRings: React.FC<{ f: number; tm: Timing; dot: DotFn; shots: readonly Shot[] }> = ({ f, tm, dot, shots }) => (
   <svg width={W} height={H} style={{ position: "absolute", inset: 0 }}>
     {tm.starts.slice(1).map((at, k) => {

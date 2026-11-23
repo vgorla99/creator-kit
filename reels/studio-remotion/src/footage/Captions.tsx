@@ -1,5 +1,5 @@
 // Spoken captions: each VO line is split into 1–3 word chunks shown in the
-// safe band; the word being spoken pops in gold. Word timing is estimated
+// safe band; the word being spoken pops in the accent colour. Word timing is estimated
 // from the line's length in the VO cut (free — no transcript): every word
 // gets time in proportion to its letters, plus a pause after punctuation.
 // The headline counts as caption: a sentence the on-screen headline (or the
@@ -8,16 +8,17 @@
 import React from "react";
 import { ease, mix, prog, springIn } from "../kit/anim";
 import type { VoLine } from "../kit/audio";
+import { BRAND_FILE } from "../brand";
 import { C, FONT } from "../kit/theme";
 import { CAPTION_W, CAPTION_Y } from "./layout";
 
 const MAX_WORDS = 3;
-const MAX_CHARS = 20; // still ~74 px at full length; lower leaves one-word orphans ("großen.")
+const MAX_CHARS = 20; // still ~74 px at full length; lower leaves one-word orphans
 const ORPHAN_MAX = 24; // a lone word may join its neighbour up to this length (the font shrinks to fit)
 const SIZE = 76;
 const LEAD_IN = 3; // a chunk shows this many frames before its first word
 const HOLD = 10; // the last chunk of a line stays this long after the line ends
-const EM = 0.56; // Outfit Bold, mixed case: average advance per character (estimated)
+const EM = 0.56; // display face, bold, mixed case: average advance per character (estimated)
 
 interface Word {
   text: string;
@@ -72,40 +73,40 @@ function chunksOf(words: readonly Word[]): Word[][] {
   return merged;
 }
 
-// Number words match the digits a headline uses ("Acht Schritte" = "8 SCHRITTE").
-// German table: other languages need their own.
-const NUM: Readonly<Record<string, string>> = {
-  null: "0",
-  ein: "1",
-  eine: "1",
-  eins: "1",
-  einem: "1",
-  zwei: "2",
-  drei: "3",
-  vier: "4",
-  fünf: "5",
-  sechs: "6",
-  sieben: "7",
-  acht: "8",
-  neun: "9",
-  zehn: "10",
-  neunzig: "90",
-};
+// Number words match the digits a headline uses ("Eight steps" = "8 STEPS").
+// One table per language; brand.language picks it (English when unset).
+// Add a language by adding a table and a line in langOf().
+const NUMBERS = {
+  en: {
+    zero: "0", one: "1", two: "2", three: "3", four: "4", five: "5", six: "6", seven: "7", eight: "8", nine: "9", ten: "10",
+    eleven: "11", twelve: "12", fifteen: "15", twenty: "20", thirty: "30", forty: "40", fifty: "50", ninety: "90", hundred: "100",
+  },
+  de: {
+    null: "0", ein: "1", eine: "1", eins: "1", einem: "1", zwei: "2", drei: "3", vier: "4", fünf: "5", sechs: "6", sieben: "7",
+    acht: "8", neun: "9", zehn: "10", elf: "11", zwölf: "12", zwanzig: "20", dreißig: "30", fünfzig: "50", neunzig: "90", hundert: "100",
+  },
+} as const satisfies Record<string, Readonly<Record<string, string>>>;
+export type CaptionLang = keyof typeof NUMBERS;
+/** "en", "en-GB", undefined -> "en"; "de", "de-AT" -> "de". */
+export const langOf = (tag: string | undefined): CaptionLang => (tag?.toLowerCase().startsWith("de") ? "de" : "en");
+const BRAND_LANG = langOf(BRAND_FILE.brand.language);
+
 const COVERED = 0.6; // share of a sentence's words already on screen that makes it skip
-const norm = (w: string) => {
+const norm = (w: string, lang: CaptionLang) => {
   const t = w.toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
-  return NUM[t] ?? t;
+  const table: Readonly<Record<string, string>> = NUMBERS[lang];
+  return table[t] ?? t;
 };
-// Same word, or the same stem (Wochenplan / Wochenpläne, beides / beide).
+// Same word, or the same stem (plan / plans, schedule / scheduled).
 const onScreen = (t: string, head: readonly string[]) => head.some((h) => h === t || (Math.min(h.length, t.length) >= 5 && (h.startsWith(t) || t.startsWith(h))));
 
-function notOnScreen(words: readonly Word[], head: string): Word[] {
-  const heads = head.split(/\s+/).map(norm).filter(Boolean);
+function notOnScreen(words: readonly Word[], head: string, lang: CaptionLang): Word[] {
+  const heads = head.split(/\s+/).map((w) => norm(w, lang)).filter(Boolean);
   const out: Word[] = [];
   let sentence: Word[] = [];
   const flush = () => {
-    // Short filler words (ist, und, die, in…) don't decide; number words (-> digits) do.
-    const toks = sentence.map((w) => norm(w.text)).filter((t) => t.length > 3 || /^\d+$/.test(t));
+    // Short filler words (is, and, the, in…) don't decide; number words (-> digits) do.
+    const toks = sentence.map((w) => norm(w.text, lang)).filter((t) => t.length > 3 || /^\d+$/.test(t));
     const hit = toks.filter((t) => onScreen(t, heads)).length;
     // Skip what the screen already says, and filler-only scraps ("Und:") left between skipped sentences.
     if (toks.length > 0 && hit / toks.length < COVERED) out.push(...sentence);
@@ -125,10 +126,11 @@ export interface CaptionLine {
 }
 
 // Placed VO lines (frames on the reel's timeline) + the spoken text of each.
-export function captionChunks(lines: readonly VoLine[], captions: readonly CaptionLine[]): Chunk[] {
+// `lang` defaults to brand.language; the caption check passes it explicitly.
+export function captionChunks(lines: readonly VoLine[], captions: readonly CaptionLine[], lang: CaptionLang = BRAND_LANG): Chunk[] {
   return lines.flatMap((line, i) => {
     const c = captions[i] ?? { text: "", head: "" };
-    const groups = chunksOf(notOnScreen(wordsOf(c.text, line), c.head));
+    const groups = chunksOf(notOnScreen(wordsOf(c.text, line), c.head, lang));
     return groups.map((words, k) => ({
       words,
       from: Math.floor(words[0].at) - LEAD_IN,
@@ -179,7 +181,7 @@ export const Captions: React.FC<{ f: number; chunks: readonly Chunk[] }> = ({ f,
       }}
     >
       {c.words.map((w) => {
-        // The spoken word pops up gold; the chunk's last word keeps its gold until the chunk leaves.
+        // The spoken word pops up in the accent colour; the chunk's last word keeps it until the chunk leaves.
         const end = w === last ? c.to : w.end;
         const on = f >= w.at && f < end ? springIn(f, Math.floor(w.at), true) : f >= end ? 1 - prog(f, end, end + 6, ease.outCubic) : 0;
         const k = Math.max(0, Math.min(1, on));

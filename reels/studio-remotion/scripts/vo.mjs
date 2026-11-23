@@ -14,14 +14,13 @@
 import { spawnSync } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { ROOT, die, probe } from "./lib/media.mjs";
+import { CLI, ROOT, die, probe } from "./lib/media.mjs";
 
 const FPS = 30;
 const PRE_ROLL = 2; // frames kept before each line's first sound
 const SNAP_WINDOW = 1.6; // s — how far a line end may sit from its text-length estimate
 const MICRO_GAP = 0.12; // s — shorter gaps may be breaths inside a phrase, not phrase ends
 const SNAP_COST = 0.15; // pause-seconds a candidate loses per second away from the estimate
-const CLI = join(ROOT, "node_modules", "@remotion", "cli", "remotion-cli.js");
 
 function parseArgs(argv) {
   const pos = [];

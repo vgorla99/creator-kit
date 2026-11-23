@@ -1,11 +1,14 @@
-// Weekly production: renders a week of the month plan into one folder per post.
+// Weekly production: renders a week of a month plan into one folder per post.
 //
+//   npm run produce -- example --only V01        the example month on a fresh clone
 //   npm run produce -- 2026-10 --week 1          silent drafts for week 1 (videos + carousels)
 //   npm run produce -- 2026-10 --only V01,C01    just these
 //   npm run produce -- 2026-10 --final V01       vo.mp3 (+ optional music.mp3) in the folder -> cut -> final.mp4
 //
-// out/<month>/<ID>-<slug>/
-//   video.mp4   silent draft (frame 0 = cover)      final.mp4   with the voiceover
+// The first word is a folder in reels/content/ that holds a plan.json.
+//
+// reels/studio-remotion/out/<folder>/<ID>-<slug>/
+//   video.mp4   silent draft (frame 0 = cover)      final.mp4   with the voice-over
 //   cover.png   frame 0, for Instagram / manual posts
 //   review.png  contact sheet of the reel
 //   vo-script.txt  ElevenLabs script (keep the <break> tags)
@@ -14,23 +17,28 @@
 
 import { spawnSync } from "node:child_process";
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
-import { ROOT, die } from "./lib/media.mjs";
+import { join, relative } from "node:path";
+import { CLI, CONTENT, REPO, ROOT, die } from "./lib/media.mjs";
 
-const CLI = join(ROOT, "node_modules", "@remotion", "cli", "remotion-cli.js");
-const MAX_MB = 50; // Publora Starter upload limit
-const [month, ...args] = process.argv.slice(2);
-if (!month || !/^\d{4}-\d{2}$/.test(month)) die("usage: npm run produce -- <YYYY-MM> --week N | --only V01,C02 | --final V01");
+const MAX_MB = 50; // a safe upload size for most schedulers
+const USAGE = "usage: npm run produce -- <folder> --week N | --only V01,C02 | --final V01   (folder = example or a month like 2026-10)";
+const [folder, ...args] = process.argv.slice(2);
+if (!folder || !/^[A-Za-z0-9_-]+$/.test(folder)) die(USAGE);
 const opt = Object.fromEntries(args.reduce((acc, a, i) => (a.startsWith("--") ? [...acc, [a.slice(2), args[i + 1] ?? ""]] : acc), []));
 
-const planPath = join(ROOT, "content", month, "plan.json");
-const voPath = join(ROOT, "content", month, "vo.json");
+const planPath = join(CONTENT, folder, "plan.json");
+if (!existsSync(planPath)) {
+  const have = existsSync(CONTENT) ? readdirSync(CONTENT).filter((d) => existsSync(join(CONTENT, d, "plan.json"))) : [];
+  die(`there is no reels/content/${folder}/plan.json. Folders with a plan: ${have.join(", ") || "none yet"}.`);
+}
+const voPath = join(CONTENT, folder, "vo.json");
 const plan = JSON.parse(readFileSync(planPath, "utf8"));
 const manifest = JSON.parse(readFileSync(join(ROOT, "assets", "manifest.json"), "utf8"));
 const assetById = new Map(manifest.assets.map((a) => [a.id, a]));
-const prefix = `${month.slice(2, 4)}${month.slice(5, 7)}`;
+const prefix = `${plan.month.slice(2, 4)}${plan.month.slice(5, 7)}`; // same as reelId() in src/plan/fromPlan.ts
 const compId = (item) => `${prefix}-${item.id}`;
-const folderOf = (item) => join(ROOT, "out", month, `${item.id}-${item.slug}`);
+const outDir = join(ROOT, "out", folder);
+const folderOf = (item) => join(outDir, `${item.id}-${item.slug}`);
 
 function remotion(cmdArgs) {
   const res = spawnSync(process.execPath, [CLI, ...cmdArgs], { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], maxBuffer: 64 * 1024 * 1024 });
@@ -48,34 +56,34 @@ function checkVideo(file) {
   if (s.width !== 1080 || s.height !== 1920) problems.push(`${s.width}x${s.height}`);
   if (s.r_frame_rate !== "30/1") problems.push(`fps ${s.r_frame_rate}`);
   if (secs > 60) problems.push(`${secs.toFixed(1)} s > 60 s`);
-  if (mb > MAX_MB) problems.push(`${mb.toFixed(1)} MB > ${MAX_MB} MB (Publora)`);
+  if (mb > MAX_MB) problems.push(`${mb.toFixed(1)} MB > ${MAX_MB} MB`);
   if (problems.length) throw new Error(`${file}: ${problems.join(", ")}`);
   return `${secs.toFixed(1)} s, ${mb.toFixed(1)} MB`;
 }
 
 const voScript = (v) => [...v.beats.map((b) => b.vo), v.ctaVo].join(`\n${plan.defaults.voBreak}\n`);
-const aiUsed = (v) => v.beats.some((b) => b.shot?.asset && assetById.get(b.shot.asset)?.ai) ;
+const aiUsed = (v) => v.beats.some((b) => b.shot?.asset && assetById.get(b.shot.asset)?.ai);
 
 function postText(v) {
   const pexels = v.beats.map((b) => b.shot?.asset && assetById.get(b.shot.asset)).filter((a) => a?.source === "pexels");
   return [
     `${v.id} — ${v.title}`,
-    `Datum: ${v.date} ${plan.defaults.videoTime} · ${v.posting === "publora" ? "Publora plant TikTok (nach „approve schedule“), Instagram manuell" : "manuell posten (TikTok + Instagram)"}`,
-    aiUsed(v) ? "⚠️ KI-Label setzen: „AI-generated content“ (eigene KI-Clips im Video)" : "Kein KI-Label nötig (nur Pexels / Grafik)",
-    "Cover: TikTok = erster Frame · Instagram = cover.png",
+    `Date: ${v.date} ${plan.defaults.videoTime} · ${v.posting === "publora" ? "Publora schedules TikTok (after you approve), Instagram by hand" : "post by hand (TikTok + Instagram)"}`,
+    aiUsed(v) ? "⚠️ Turn on the AI label: \"AI-generated content\" (your own AI clips are in this video)" : "No AI label needed (stock clips / graphics only)",
+    "Cover: TikTok = first frame · Instagram = cover.png",
     "",
-    "── TikTok-Caption ──",
+    "── TikTok caption ──",
     `${v.caption}\n\n${[...v.hashtags, ...plan.defaults.baseTags].join(" ")}`,
     "",
-    "── First Comment (anpinnen) ──",
+    "── First comment (pin it) ──",
     v.firstComment,
     "",
-    "── Instagram-Caption ──",
+    "── Instagram caption ──",
     `${v.igCaption}\n\n${[...v.hashtags, ...(plan.defaults.igTags ?? [])].join(" ").toLowerCase()}`,
     "",
-    "── Antwort-Vorlagen ──",
+    "── Reply templates ──",
     ...v.replies.map((r) => `• ${r}`),
-    ...(pexels.length ? ["", "── Footage-Credits (Pexels License, keine Nennung nötig) ──", ...pexels.map((a) => `• ${a.author} — ${a.url}`)] : []),
+    ...(pexels.length ? ["", "── Footage credits (Pexels License, credit not required) ──", ...pexels.map((a) => `• ${a.author} — ${a.url}`)] : []),
     "",
   ].join("\n");
 }
@@ -83,7 +91,10 @@ function postText(v) {
 function draftVideo(v) {
   const dir = folderOf(v);
   mkdirSync(dir, { recursive: true });
-  writeFileSync(join(dir, "vo-script.txt"), `Stimme: ${plan.defaults.voice}\nBreak-Tags drinlassen — daran wird das Audio geschnitten. Datei als vo.mp3 (oder vo-XX.mp3) in diesen Ordner legen.\n\n${voScript(v)}\n`);
+  writeFileSync(
+    join(dir, "vo-script.txt"),
+    `Voice: ${plan.defaults.voice}\nKeep the break tags: the audio is cut at those pauses. Save the file as vo.mp3 (or vo-XX.mp3) in this folder.\n\n${voScript(v)}\n`,
+  );
   writeFileSync(join(dir, "post.txt"), postText(v));
   const id = compId(v);
   remotion(["render", "src/index.ts", id, join(dir, "video.mp4"), "--muted", "--log=error"]);
@@ -99,23 +110,23 @@ function draftCarousel(c) {
   c.slides.forEach((_, i) => remotion(["still", "src/index.ts", compId(c), join(dir, `slide-${i + 1}.png`), `--frame=${i}`, "--log=error"]));
   writeFileSync(
     join(dir, "post.txt"),
-    [`${c.id} — ${c.title}`, `Datum: ${c.date} ${plan.defaults.carouselTime} · manuell (TikTok Foto-Modus + Instagram Karussell)`, "", "── Caption ──", `${c.caption}\n\n${c.hashtags.join(" ")}`, ""].join("\n"),
+    [`${c.id} — ${c.title}`, `Date: ${c.date} ${plan.defaults.carouselTime} · post by hand (TikTok photo mode + Instagram carousel)`, "", "── Caption ──", `${c.caption}\n\n${c.hashtags.join(" ")}`, ""].join("\n"),
   );
   return `${c.slides.length} slides`;
 }
 
 function finalVideo(v) {
   const dir = folderOf(v);
-  const found = readdirSync(dir).filter((f) => /^vo.*\.mp3$/i.test(f)); // vo.mp3, vo-01.mp3, ...
-  if (found.length !== 1) die(`${v.id}: expected exactly one vo*.mp3 in ${dir}, found ${found.length}`);
+  const found = existsSync(dir) ? readdirSync(dir).filter((f) => /^vo.*\.mp3$/i.test(f)) : []; // vo.mp3, vo-01.mp3, ...
+  if (found.length !== 1) die(`${v.id}: put exactly one vo*.mp3 in ${dir} (found ${found.length})`);
   const mp3 = join(dir, found[0]);
   const lines = v.beats.length + 1;
   const cutFile = join(dir, "vo-cut.json");
   const textFile = join(dir, "vo-lines.json"); // fallback cut when the break pauses got lost
   writeFileSync(textFile, `${JSON.stringify([...v.beats.map((b) => b.vo), v.ctaVo], null, 2)}\n`);
-  const args = [join(ROOT, "scripts", "vo.mjs"), mp3, "--lines", String(lines), "--out", cutFile, "--text", textFile];
-  const res = spawnSync(process.execPath, args, { cwd: ROOT, encoding: "utf8", stdio: "inherit" });
-  if (res.status !== 0) die(`${v.id}: VO cut failed (see above)`);
+  const voArgs = [join(ROOT, "scripts", "vo.mjs"), mp3, "--lines", String(lines), "--out", cutFile, "--text", textFile];
+  const res = spawnSync(process.execPath, voArgs, { cwd: ROOT, encoding: "utf8", stdio: "inherit" });
+  if (res.status !== 0) die(`${v.id}: cutting the voice-over failed (see above)`);
   const cut = JSON.parse(readFileSync(cutFile, "utf8"));
   const audioRel = `audio/${prefix}/${v.id}.mp3`;
   mkdirSync(join(ROOT, "public", "audio", prefix), { recursive: true });
@@ -131,7 +142,7 @@ function finalVideo(v) {
   const id = compId(v);
   const out = join(dir, "final.mp4");
   remotion(["render", "src/index.ts", id, out, "--log=error"]);
-  // Footage-heavy finals can pass Publora's limit at Remotion's default CRF 18; one retry at 23 roughly halves the size.
+  // Footage-heavy finals can pass the size limit at Remotion's default CRF 18; one retry at 23 roughly halves the size.
   if (statSync(out).size / 1048576 > MAX_MB) remotion(["render", "src/index.ts", id, out, "--crf=23", "--log=error"]);
   const info = checkVideo(out);
   remotion(["still", "src/index.ts", id, join(dir, "cover.png"), "--frame=0", "--log=error"]);
@@ -145,10 +156,10 @@ if (opt.final) picked = all.filter(({ kind, item }) => kind === "video" && opt.f
 else if (opt.only) picked = all.filter(({ item }) => opt.only.split(",").includes(item.id));
 else if (opt.week) {
   const w = plan.weeks.find((x) => String(x.n) === opt.week);
-  if (!w) die(`no week ${opt.week} in the plan`);
+  if (!w) die(`there is no week ${opt.week} in the plan`);
   picked = all.filter(({ item }) => item.date >= w.from && item.date <= w.to);
-} else die("pick --week N, --only IDS or --final IDS");
-if (!picked.length) die("nothing matched");
+} else die(USAGE);
+if (!picked.length) die(`nothing in the plan matches. IDs in this plan: ${all.map(({ item }) => item.id).join(", ")}`);
 picked.sort((a, b) => a.item.date.localeCompare(b.item.date));
 
 let failed = 0;
@@ -165,5 +176,5 @@ for (const { kind, item } of picked) {
     console.error(`✖ ${item.id} ${item.slug} — ${e.message}`);
   }
 }
-console.log(`\n${picked.length - failed}/${picked.length} done → out/${month}/`);
+console.log(`\n${picked.length - failed}/${picked.length} done → ${relative(REPO, outDir)}`);
 if (failed) process.exit(1);

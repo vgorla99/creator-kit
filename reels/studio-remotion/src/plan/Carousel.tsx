@@ -4,7 +4,7 @@
 
 import React from "react";
 import { AbsoluteFill, useCurrentFrame } from "remotion";
-import { BRAND } from "../brand";
+import { BRAND, BRAND_FILE } from "../brand";
 import { GlobalFonts } from "../kit/fonts";
 import { Grain } from "../kit/svg";
 import { C, FONT } from "../kit/theme";
@@ -13,6 +13,8 @@ import { reelId } from "./fromPlan";
 export const CW = 1080;
 export const CH = 1350;
 const PAD = 90;
+// Last-slide button: brand.yaml visual.end_card.button, else "LINK IN BIO".
+const CTA_BUTTON = (BRAND_FILE.visual.end_card?.button ?? "LINK IN BIO").toUpperCase();
 
 export interface PlanCarousel {
   id: string;
@@ -101,7 +103,7 @@ const Outro: React.FC<{ head: string; sub: string }> = ({ head, sub }) => (
         boxShadow: `0 0 60px ${C.primary}66`,
       }}
     >
-      LINK IN BIO
+      {CTA_BUTTON}
     </div>
   </div>
 );

@@ -37,7 +37,7 @@ export const BULLET_X = 150;
 export const ROW_Y = [1100, 1210, 1320] as const;
 export const ROW_H = 110;
 
-// Outfit Bold advance widths in em, by character class (uppercase headlines).
+// Display-face bold advance widths in em, by character class (uppercase headlines).
 // Estimated, then rounded up; review sheets are the final check.
 const NARROW = new Set("IJ1.,:;!'|");
 const WIDE = new Set("MWÄÖÜ");
