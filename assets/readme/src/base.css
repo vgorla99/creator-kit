@@ -1,5 +1,5 @@
 /* Shared tokens for the README images (assets/readme/*.jpg). Fonts come from the repo's own @fontsource packages.
-   Rebuild: render the stills the HTML files reference into out/readme/ (npx remotion still src/index.ts <id> out/readme/<id>-<frame>.png --frame=<frame>),
+   Rebuild: render the stills the HTML files reference into reels/studio-remotion/out/readme/ (from reels/studio-remotion: npx remotion still src/index.ts <id> out/readme/<id>-<frame>.png --frame=<frame>; HyperFrames frames: npm run hf:snapshot, copy frame-*.png as HF-*.png),
    then screenshot each page at 2x, e.g. chrome --headless=new --force-device-scale-factor=2 --window-size=1280,640 --screenshot=banner.png banner.html */
 @font-face { font-family: "SG"; font-weight: 500; src: url("../../../node_modules/@fontsource/space-grotesk/files/space-grotesk-latin-500-normal.woff2"); }
 @font-face { font-family: "SG"; font-weight: 700; src: url("../../../node_modules/@fontsource/space-grotesk/files/space-grotesk-latin-700-normal.woff2"); }

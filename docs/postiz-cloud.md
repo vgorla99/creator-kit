@@ -77,7 +77,7 @@ A **red marker** on a channel means it needs attention, usually a reconnect from
 1. Click **Create Post**, or click an empty slot on the calendar to start at that time.
 2. At the top, tick the channels to post to.
 3. Write your caption in the **Global** tab; it goes to every ticked channel. To change it for one platform, open that platform's tab and unlock it.
-4. Drag your video in (from the kit's `out/` folder).
+4. Drag your video in: the finished reel in `reels/content/00_Ready/<reel>/` (or a fresh render in `reels/studio-remotion/out/` / `reels/studio-hyperframes/out/`).
 5. Fill in the settings on the right for each platform. **YouTube needs a title.** For TikTok, choose **Post directly to TikTok** to publish; *Upload without posting* only sends it to your TikTok inbox, where you must finish it by hand within 24 hours.
 6. Check the preview column, pick a date and time, and add it to the calendar.
 
