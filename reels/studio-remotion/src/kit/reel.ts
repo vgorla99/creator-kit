@@ -3,7 +3,7 @@ import { MAX_FRAMES } from "./theme";
 
 // What every reel folder exports from its Reel.tsx as `reel`.
 export interface ReelEntry {
-  id: string; // Remotion composition id, PascalCase, e.g. "LiftForLater"
+  id: string; // Remotion composition id, PascalCase, e.g. "Starter"
   component: React.FC;
   durationInFrames: number; // <= MAX_FRAMES (60s)
   reviewFrames: readonly number[]; // frames tiled by `npm run review`
