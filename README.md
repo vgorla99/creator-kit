@@ -25,7 +25,7 @@
 ---
 
 > [!NOTE]
-> **Creator Kit v2 is being built in the open.** The Remotion reel engine works today and is documented below. The shared `brand.yaml`, the HyperFrames studio, the site builder and the one-command setup are on the [roadmap](#roadmap). Until then, your brand lives in [`src/brand.ts`](src/brand.ts).
+> **Creator Kit v2 is being built in the open.** The Remotion reel engine works today and is documented below. Your brand lives in one file, [`brand/brand.yaml`](brand/brand.yaml). The HyperFrames studio, the site builder and the one-command setup are on the [roadmap](#roadmap).
 
 ## How it works
 
@@ -62,7 +62,7 @@ npm run demo                                                # the single-protago
 
 Then make it yours:
 
-1. Edit [`src/brand.ts`](src/brand.ts): name, handle, wordmark, five colours, optional music. Colour pairs are contrast-checked when the project loads, so an unreadable combination stops with a clear message.
+1. Open Claude Code in this folder and type `/brand-intake`: it asks you one question at a time, writes your [`brand/brand.yaml`](brand/brand.yaml) and [`brand/STYLE.md`](brand/STYLE.md), and checks them. Prefer editing by hand? Change `brand/brand.yaml` (it ships with an invented example brand, Kiln Hour) and run `npm run brand:check`, which tells you in plain English what to fix.
 2. Copy `.env.example` to `.env` and add the keys you need. Each one is optional:
 
    | Key | Used for |
@@ -79,7 +79,8 @@ The full reference (plan format, blocks, captions, audio, the motion kit) is in 
 
 | Path | What it is |
 |---|---|
-| `src/brand.ts` | your brand: the one file to reskin |
+| `brand/` | your brand: `brand.yaml` (the facts) and `STYLE.md` (the feel) |
+| `schema/` | the rules for `brand.yaml` and the checker behind `npm run brand:check` |
 | `src/footage/` | footage engine: clips or brand stages, overlays, 10 animated blocks, spoken captions |
 | `src/plan/` | monthly plan → reels and 4:5 carousels |
 | `src/kit/` | the motion language: easing, springs, transitions, type, review sheets |
@@ -91,8 +92,8 @@ The full reference (plan format, blocks, captions, audio, the motion kit) is in 
 
 - [x] Remotion reel engine, footage engine, monthly plans, carousels
 - [x] Production scripts: stock clips, voice-over, review documents, scheduling
-- [ ] One `brand.yaml` with a schema, plus a guided brand intake
-- [ ] `reels/` restructure, with an invented example brand
+- [x] One `brand.yaml` with a schema, plus a guided brand intake and an invented example brand
+- [ ] `reels/` restructure
 - [ ] HyperFrames studio as a second reel builder, side by side with Remotion
 - [ ] One-command setup for Windows and macOS, with a `doctor` check
 - [ ] `broll-scout`: licence-logged B-roll from Pexels, Pixabay and Wikimedia

@@ -17,7 +17,7 @@ npm run reel -- GripStrength        # render + Instagram spec check + review she
 Requires Node ≥ 20. Remotion downloads its own headless Chromium and ships ffmpeg/ffprobe.
 
 ```
-src/brand.ts        your name, handle, mark, 5 colors, optional music — the ONLY file to reskin
+brand/brand.yaml    your name, handle, 5 colors, wordmark, optional music — the ONLY file to reskin
 src/kit/            the motion language — shared by every reel
 src/reels/<slug>/   one video: its timeline, its protagonist, its scenes
 src/reels/_starter/ a tiny working reel that `npm run new` copies
@@ -25,23 +25,29 @@ src/reels/_starter/ a tiny working reel that `npm run new` copies
 
 ---
 
-## 1. Make it yours: `src/brand.ts`
+## 1. Make it yours: `brand/brand.yaml`
 
-```ts
-export const BRAND: Brand = {
-  name: "ACME STUDIO",
-  handle: "@acme",
-  mark: { prefix: "AC", suffix: "ME" },        // top-left wordmark, suffix accented
-  colors: {
-    dark: "#0D0D12",       // deep stage + ink on light stages
-    light: "#F4F1EA",      // light stage + type on dark stages
-    primary: "#FF5A36",    // the protagonist, highlights, CTA button — bright, glows on dark
-    secondary: "#0E8A82",  // wipes, "after"/progress data — mid-tone
-    tertiary: "#2B1E5C",   // stat / CTA stage — deep, saturated
-  },
-  music: null,             // or "audio/bed.mp3" under public/ (licensed tracks only)
-};
+Run `/brand-intake` in Claude Code, or edit [`brand/brand.yaml`](../brand/brand.yaml) by hand and run `npm run brand:check`. The reels read these fields (the full list and rules are in [`schema/brand.schema.json`](../schema/brand.schema.json)):
+
+```yaml
+brand:
+  name: Kiln Hour          # bottom-right on every frame
+  handle: "@kilnhour"      # bottom-left on every frame + CTA button
+visual:
+  colors:
+    dark: "#1B1714"        # deep stage + ink on light stages
+    light: "#F6EFE6"       # light stage + type on dark stages
+    primary: "#E8743F"     # the protagonist, highlights, CTA button: bright, glows on dark
+    secondary: "#5E8F7E"   # wipes, "after"/progress data: mid-tone
+    tertiary: "#3B2850"    # stat / CTA stage: deep, saturated
+  wordmark:                # optional; default = name split into bold first words + light last word
+    prefix: KILN
+    suffix: HOUR
+motion:
+  music: null              # or "audio/bed.mp3" under public/ (licensed tracks only)
 ```
+
+`src/brand.ts` loads this file when Studio or a render starts; you don't edit it.
 
 - Colors are **contrast-checked at load**. If a pair would be illegible (e.g. `primary` on `dark` below 4.5:1), Studio and renders stop with a message naming the pair to fix.
 - Text on any stage picks dark or light ink by actual contrast (`inkOn()`), and small accents pick a visible accent (`accentOn()`), so a reskin never needs per-scene color edits.
