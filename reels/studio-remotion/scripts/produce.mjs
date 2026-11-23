@@ -65,7 +65,11 @@ const voScript = (v) => [...v.beats.map((b) => b.vo), v.ctaVo].join(`\n${plan.de
 const aiUsed = (v) => v.beats.some((b) => b.shot?.asset && assetById.get(b.shot.asset)?.ai);
 
 function postText(v) {
-  const pexels = v.beats.map((b) => b.shot?.asset && assetById.get(b.shot.asset)).filter((a) => a?.source === "pexels");
+  // Stock clips (Pexels, Pixabay, Wikimedia) carry a credit line from scripts/broll.mjs; older Pexels records don't.
+  const stock = [...new Set(v.beats.map((b) => b.shot?.asset && assetById.get(b.shot.asset)).filter((a) => a?.credit || a?.source === "pexels"))];
+  const credit = (a) => a.credit ?? `${a.author} — ${a.url}`;
+  const required = stock.filter((a) => a.attributionRequired);
+  const courtesy = stock.filter((a) => !a.attributionRequired);
   return [
     `${v.id} — ${v.title}`,
     `Date: ${v.date} ${plan.defaults.videoTime} · ${v.posting === "publora" ? "Publora schedules TikTok (after you approve), Instagram by hand" : "post by hand (TikTok + Instagram)"}`,
@@ -83,7 +87,8 @@ function postText(v) {
     "",
     "── Reply templates ──",
     ...v.replies.map((r) => `• ${r}`),
-    ...(pexels.length ? ["", "── Footage credits (Pexels License, credit not required) ──", ...pexels.map((a) => `• ${a.author} — ${a.url}`)] : []),
+    ...(required.length ? ["", "── Footage credits: REQUIRED, add to the caption ──", ...required.map((a) => `• ${credit(a)}`)] : []),
+    ...(courtesy.length ? ["", "── Footage credits (not required, appreciated) ──", ...courtesy.map((a) => `• ${credit(a)}`)] : []),
     "",
   ].join("\n");
 }
