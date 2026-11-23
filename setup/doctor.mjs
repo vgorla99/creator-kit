@@ -49,7 +49,7 @@ function readChoices() {
   if (!existsSync(file)) return { parts: [], engine: "" };
   try {
     const c = JSON.parse(readFileSync(file, "utf8"));
-    return { parts: Array.isArray(c.parts) ? c.parts.map(String) : [], engine: String(c.engine ?? "") };
+    return { parts: [c.parts ?? []].flat().map(String), engine: String(c.engine ?? "") };
   } catch {
     return { parts: [], engine: "" };
   }

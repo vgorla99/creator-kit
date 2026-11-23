@@ -238,7 +238,7 @@ if ($WantReels) {
 
 # ---------------------------------------------------------------- skills
 
-$choices = @{ parts = $PartList; engine = $Engine } | ConvertTo-Json -Compress
+$choices = @{ parts = @($PartList); engine = $Engine } | ConvertTo-Json -Compress
 Set-Content -Path (Join-Path $Repo 'setup\.choices.json') -Value $choices -Encoding ASCII
 
 $skillArgs = @('setup\skills.mjs', '--parts', ($PartList -join ','), '--engine', $Engine)
