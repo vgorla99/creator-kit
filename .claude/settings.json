@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(npm run brand:check)",
+      "Bash(npm run doctor)",
+      "Bash(npm run typecheck)",
+      "Bash(npm run check:captions)",
+      "Bash(npm run starter)",
+      "Bash(npm run smoke)",
+      "Bash(npm run reel:*)",
+      "Bash(npm run produce:*)",
+      "Bash(npm run doc:*)",
+      "Bash(npm run new:*)",
+      "Bash(npm run library:*)",
+      "Bash(npm run build)",
+      "Bash(npm run check-seo)",
+      "Bash(node setup/doctor.mjs)",
+      "Bash(npx remotion still:*)",
+      "Bash(npx remotion render:*)",
+      "Bash(ffprobe:*)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)"
+    ],
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(git commit:*)",
+      "Bash(npm install -g:*)",
+      "Bash(postiz upload:*)",
+      "Bash(postiz posts:create:*)",
+      "Bash(postiz posts:delete:*)",
+      "Bash(npm run publora:*)",
+      "Bash(npx wrangler:*)",
+      "Bash(rm:*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.local)",
+      "Read(./**/.env)",
+      "Read(./**/.env.local)",
+      "Read(./**/*.secrets)",
+      "Edit(./.env)",
+      "Edit(./**/.env)",
+      "Bash(cat .env:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)"
+    ]
+  }
+}
