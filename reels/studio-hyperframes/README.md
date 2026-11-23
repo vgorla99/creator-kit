@@ -16,22 +16,26 @@ A HyperFrames reel is a web page. Each scene is a small HTML file, and HyperFram
 Open a terminal in the `creator-kit` folder, then:
 
 ```
-cd reels/studio-hyperframes
-npm install
-npm run render
+npm run hf:render
 ```
+
+(The setup installs this studio when you pick HyperFrames. If it did not, the first `hf:` command installs it.)
 
 The video lands in `reels/studio-hyperframes/out/starter.mp4`. The first render can take a few minutes while HyperFrames sets itself up; after that a render takes about 30 seconds.
 
 ## Preview and edit
 
+Run these from the `creator-kit` folder (inside `reels/studio-hyperframes/` the same commands work without `hf:`):
+
 | Command | What it does |
 |---|---|
-| `npm run preview` | opens HyperFrames Studio in your browser: play, scrub and click through the timeline |
-| `npm run check` | checks the reel (text inside the phone's safe area, contrast, timing) and lists anything to fix |
-| `npm run snapshot` | saves one still per scene (plus a contact sheet) into `.hyperframes/artifacts/snapshots/` |
-| `npm run render` | renders `out/starter.mp4` |
-| `npm run brand` | re-reads `brand/brand.yaml` (every command above already does this) |
+| `npm run hf:preview` | opens HyperFrames Studio in your browser: play, scrub and click through the timeline |
+| `npm run hf:check` | checks the reel (text inside the phone's safe area, contrast, timing) and lists anything to fix |
+| `npm run hf:snapshot` | saves one still per scene (plus a contact sheet) into `.hyperframes/artifacts/snapshots/` |
+| `npm run hf:render` | renders `out/starter.mp4` |
+| `npm run hf:smoke` | saves one test frame to `out/smoke/` (the setup runs this) |
+
+Every command first re-reads `brand/brand.yaml`. The kit turns HyperFrames' anonymous usage data off for these commands; set `HYPERFRAMES_NO_TELEMETRY=0` if you want to share it.
 
 Three ways to change it:
 
@@ -48,13 +52,13 @@ Do not edit `film/brand.css` or `film/brand.js`: they are rebuilt from `brand.ya
 
 ## Captions
 
-The starter has no voice, so it has no captions. For a talking-head clip (you speaking to camera), use the **embedded-captions** skill from HyperFrames. Setup installs it when you pick HyperFrames as your engine; it is not copied into this repo.
+The starter has no voice, so it has no captions. For a talking-head clip (you speaking to camera), ask Claude: captions are part of the **hyperframes** skill (its `references/captions.md`), which setup installs when you pick HyperFrames as your engine; it is not copied into this repo.
 
 1. Put your clip in a new folder, for example `reels/content/00_Ideas/clay-tip/`.
-2. In Claude Code, type: *"/embedded-captions add captions to reels/content/00_Ideas/clay-tip/my-clip.mp4"*.
-3. It transcribes your voice on your computer (WhisperX, no upload), shows you a style to pick (the plain lower-third "anchor" style is the default), checks the frames and renders the captioned video next to your clip.
+2. In Claude Code, type: *"/hyperframes add captions to reels/content/00_Ideas/clay-tip/my-clip.mp4"*.
+3. It transcribes your voice on your computer (`hyperframes transcribe`, no upload), offers caption styles from the HyperFrames catalog, checks the frames and renders the captioned video.
 
-It needs `uv` and FFmpeg (setup installs both) and Git Bash on Windows. If the skill is missing, install it with `npx hyperframes skills update embedded-captions`.
+The first transcription may ask to install a speech model; Claude tells you the command.
 
 ## Where things live
 
@@ -67,4 +71,4 @@ reels/studio-hyperframes/
 └─ out/                your renders (not saved to git)
 ```
 
-HyperFrames is open source (Apache-2.0) by HeyGen: [github.com/heygen-com/hyperframes](https://github.com/heygen-com/hyperframes). The `hyperframes` package is installed by `npm install`, not copied here.
+HyperFrames is open source (Apache-2.0) by HeyGen: [github.com/heygen-com/hyperframes](https://github.com/heygen-com/hyperframes). The `hyperframes` package (pinned to 0.9.84) is installed from npm by the setup, not copied here.

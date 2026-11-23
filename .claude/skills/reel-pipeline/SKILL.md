@@ -14,24 +14,24 @@ Read first, every time: `brand/brand.yaml` and `brand/STYLE.md`. If they still h
 | The creator brings | Route | Where |
 |---|---|---|
 | A month of tips, myths, lists or quick explainers | monthly plan (footage blocks, captions, carousels) | copy `reels/content/example/` to `reels/content/<yyyy-mm>/`, edit `plan.json`, `npm run produce -- <yyyy-mm> --week 1` |
-| Their own clips (talking head, b-roll, screen recording) | footage engine inside the plan | `npm run library` adds clips; stock clips: `npm run pexels -- search "<words>"` |
+| Their own clips (talking head, b-roll, screen recording) | footage engine inside the plan | `npm run library` adds clips; stock B-roll (Wikimedia, Pexels, Pixabay) with licences logged: the `broll-scout` skill |
 | One idea that deserves its own look | hand-built reel | `npm run new -- <slug>` copies the starter; `npm run reel -- <Id>` renders it |
 | A product, app or website to promote | product promo | engine `remotion`: the `video-shotcraft` skill; engine `hyperframes`: `motionmaxxing` |
-| A one-off motion graphic, kinetic type, a brand sting | motion piece | `motion.engine` decides: Remotion starter, or HyperFrames (`motionmaxxing` + `hyperframes`) when `reels/studio-hyperframes/` exists |
+| A one-off motion graphic, kinetic type, a brand sting | motion piece | `motion.engine` decides: Remotion starter, or HyperFrames (`motionmaxxing` + `hyperframes`, starting from `reels/studio-hyperframes/`) |
 | A beat that explains how something works inside (a joint, an engine, a process) | an isometric figure as one insert | the `anatomy` skill, if installed; one figure, approved as a still first |
 | A cheat sheet or a list to save | carousel | the plan's carousel slides (4:5), made by `npm run produce` |
 
 Not sure which? Ask one question naming the two closest rows. Never invent a new look silently: propose it and wait.
 
-Full command reference: `docs/reels-remotion.md`.
+Full command reference: `docs/reels-remotion.md` (Remotion) and `reels/studio-hyperframes/README.md` (HyperFrames: `npm run hf:preview`, `hf:snapshot`, `hf:check`, `hf:render`). Review drafts, captions and the month in the local dashboard: `npm run dashboard` (http://localhost:5180).
 
 ## 2. Steps (every reel)
 
 1. **Understand.** Read the source fully (their notes, a link, the footage). Look at footage as a contact sheet (`ffmpeg -i clip.mp4 -vf "fps=1,scale=270:-1,tile=6x4" sheet.jpg`). If they speak on camera, get word timings (faster-whisper or WhisperX) before writing captions.
 2. **Plan in chat, short.** Hook A and hook B (max 6 words each, two different hook types; use `ab-hook-tester` for the pair and check both against the `virality` first-3-seconds rule), the beats, the words on screen, the call to action. For any motion, write the brief with `motion-brief`. **Gate: wait for the creator's OK.**
 3. **Build.** New things in new files; never change shared kit code other reels use without asking. Sound effects only where the picture needs them (from `reels/sounds/SOUND-LIBRARY.md`), never on every cut.
-4. **Stills.** Render the key frames as one contact sheet (Remotion: `npx remotion still src/index.ts <Id> out/<Id>-f<N>.png --frame=<N>` from `reels/studio-remotion/`, or the review sheet `npm run reel -- <Id> --review-only`). **Gate: wait for the creator's OK.**
-5. **Render.** `npm run reel -- <Id>` (hand-built) or `npm run produce -- <month> --final <ID>` (plan). The render checks 1080×1920, 30 fps, ≤ 60 s.
+4. **Stills.** Render the key frames as one contact sheet (Remotion: `npx remotion still src/index.ts <Id> out/<Id>-f<N>.png --frame=<N>` from `reels/studio-remotion/`, or the review sheet `npm run reel -- <Id> --review-only`; HyperFrames: `npm run hf:snapshot`). **Gate: wait for the creator's OK.**
+5. **Render.** `npm run reel -- <Id>` (hand-built) or `npm run produce -- <month> --final <ID>` (plan); HyperFrames: `npm run hf:check`, then `npm run hf:render`. The Remotion render checks 1080×1920, 30 fps, ≤ 60 s.
 6. **Package** into `reels/content/00_Ready/<yyyy-mm-dd>_<slug>/`:
    - `reel.mp4`, `cover.png`, `caption.txt` (caption in the creator's voice; run `humanizer` over it)
    - trial version if `content.trial_reels` is true: `reel-trial-B.mp4` (only the hook changes), `trial-B.txt` (hook type + a caption written for strangers)

@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-FF5A36?style=flat-square" alt="MIT license"></a>
-  <img src="https://img.shields.io/badge/node-%E2%89%A520-0D0D12?style=flat-square" alt="Node 20 or newer">
+  <img src="https://img.shields.io/badge/node-%E2%89%A522.18-0D0D12?style=flat-square" alt="Node 22.18 or newer">
   <img src="https://img.shields.io/badge/Remotion-4-0D0D12?style=flat-square" alt="Remotion 4">
   <img src="https://img.shields.io/badge/status-v2%20in%20progress-0E8A82?style=flat-square" alt="v2 in progress">
 </p>
@@ -27,7 +27,7 @@
 ---
 
 > [!NOTE]
-> **Creator Kit v2 is being built in the open.** The Remotion reel engine, the site builder and the one-command setup work today. Your brand lives in one file, [`brand/brand.yaml`](brand/brand.yaml). The HyperFrames studio is on the [roadmap](#roadmap).
+> **Creator Kit v2 is being built in the open.** Two reel engines (Remotion and HyperFrames), B-roll search, a local dashboard, the site builder and the one-command setup work today. Your brand lives in one file, [`brand/brand.yaml`](brand/brand.yaml). What is left is on the [roadmap](#roadmap).
 
 ## How it works
 
@@ -86,6 +86,9 @@ Claude asks one question at a time (name, audience, colours, fonts, voice, posti
 ### 4. Your first reel or website
 
 - **Reel:** type `npm run starter` in the terminal. Your 12-second starter reel, in your colours, lands in `reels/studio-remotion/out/Starter.mp4`. Or just tell Claude: *"make a reel about …"*. It plans with you, shows you stills, and only renders when you say OK.
+- **Reel with HyperFrames** (if you picked it): `npm run hf:render` renders the 10-second HTML starter to `reels/studio-hyperframes/out/starter.mp4`; `npm run hf:preview` opens it in your browser. Which engine to pick: [docs/engines.md](docs/engines.md).
+- **B-roll:** tell Claude `/broll-scout` and what you need. It searches your own footage, Wikimedia Commons, Pexels and Pixabay, shows a preview sheet, and adds only the clips you pick, with source and licence logged.
+- **Dashboard:** `npm run dashboard`, then open http://localhost:5180 to review every reel from draft to live, edit captions, see your month and which hooks win. It runs on your computer only.
 - **Website:** tell Claude `/site-builder`. It plans the pages with you, builds them, and walks you through putting the site online for free. Step by step: [Launching your website](docs/sites-launch.md).
 
 Nothing is ever posted without you: posting is a separate step where Claude shows you the exact video, channel, time and caption and waits for your yes.
@@ -100,14 +103,19 @@ Nothing is ever posted without you: posting is a separate step where Claude show
 | `npm run starter` | renders the starter reel in your brand colours, plus a review sheet |
 | `npm run produce -- example --only V01` | renders the example month's video: video, cover, review sheet, voice-over script, post text |
 | `npm start` | opens Remotion Studio in your browser, where you can scrub every reel |
+| `npm run hf:preview` · `hf:check` · `hf:render` | the HyperFrames studio: preview in the browser, check, render |
+| `npm run dashboard` | the local dashboard on http://localhost:5180 (Ctrl+C stops it) |
+| `npm run broll -- search "<words>"` | searches stock B-roll (Claude's `/broll-scout` does this for you) |
+| `npm run library -- credits` | prints the credit lines your post needs for the clips you used |
 
-Keys for optional services go in `.env` (the setup creates it; every key is optional and stays on your computer):
+Keys for optional services go in `.env` (the setup creates it; every key is optional and stays on your computer). `npm run doctor` tells you which stock keys are set without showing them; Wikimedia Commons needs no key.
 
 | Key | Used for |
 |---|---|
-| `PEXELS_API_KEY` | searching and downloading stock clips |
+| `PEXELS_API_KEY` | stock clips from Pexels (free key: [pexels.com/api](https://www.pexels.com/api/)) |
+| `PIXABAY_API_KEY` | stock clips from Pixabay (free key: [pixabay.com/api/docs](https://pixabay.com/api/docs/)) |
 | `ELEVENLABS_API_KEY` | voice-over |
-| `POSTIZ_API_KEY`, `POSTIZ_API_URL` | scheduling with Postiz (see [Posting](#posting)) |
+| `POSTIZ_API_KEY`, `POSTIZ_API_URL` | scheduling with Postiz (see [Posting](#posting)), and the dashboard's queue and numbers |
 | `PUBLORA_API_KEY` | scheduling with Publora |
 
 Plan a month: copy [`reels/content/example/`](reels/content/example/) to `reels/content/<yyyy-mm>/`, edit its `plan.json` (Claude Code can draft it from your brand file and your numbers), then `npm run produce -- <yyyy-mm> --week 1`. Sound effects: see [`reels/sounds/SOUND-LIBRARY.md`](reels/sounds/SOUND-LIBRARY.md). The full reference is in the **[reels guide](docs/reels-remotion.md)**.
@@ -163,6 +171,8 @@ Step by step, for non-developers: **[Launching your website](docs/sites-launch.m
 | `brand/` | your brand: `brand.yaml` (the facts) and `STYLE.md` (the feel) |
 | `schema/` | the rules for `brand.yaml` and the checker behind `npm run brand:check` |
 | `reels/studio-remotion/` | the Remotion reel studio: starter reel, footage engine, 10 animated blocks, captions, carousels, scripts |
+| `reels/studio-hyperframes/` | the HyperFrames reel studio: a starter reel built as an HTML page (`npm run hf:render`) |
+| `reels/dashboard/` | the local dashboard: review, captions, calendar, numbers, Style rounds (`npm run dashboard`) |
 | `reels/content/` | what you post: ideas, ready, live, metrics, and month plans (`example/` renders on a fresh copy) |
 | `reels/sounds/` | how to get and index sound effects (the packs themselves stay on your computer) |
 | `sites/template/` | the website template: React + Vite + Tailwind, SEO scripts |
@@ -178,12 +188,13 @@ Step by step, for non-developers: **[Launching your website](docs/sites-launch.m
 - [x] Production scripts: stock clips, voice-over, review documents, scheduling
 - [x] One `brand.yaml` with a schema, plus a guided brand intake and an invented example brand
 - [x] `reels/` restructure: Remotion studio, content folders, sound library guide
-- [ ] HyperFrames studio as a second reel builder, side by side with Remotion
-- [x] One-command setup for Windows and macOS, with a `doctor` check
-- [ ] `broll-scout`: licence-logged B-roll from Pexels, Pixabay and Wikimedia
-- [ ] Local dashboard: plans, review, style, analytics
+- [x] HyperFrames studio as a second reel builder, side by side with Remotion
+- [x] One-command setup for Windows and macOS, with a `doctor` check (tested on Windows; the macOS script is syntax-checked, not yet run on a Mac)
+- [x] `broll-scout`: licence-logged B-roll from your footage, Wikimedia, Pexels and Pixabay
+- [x] Local dashboard: plans, review, style, analytics
 - [ ] Posting guides: Postiz self-hosted, Postiz Cloud, native schedulers (written; self-host guide being tested on a fresh server)
 - [x] `sites/`: React + Vite + Tailwind template, niche research, Cloudflare Pages deploy
+- [ ] Guides with screenshots for every part, then the v2.0.0 release
 
 ## Principles
 

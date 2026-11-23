@@ -58,7 +58,7 @@ Use these tag names every time. Long reference material first, the task last.
 
 - Use `motion.engine` from brand.yaml.
 - **remotion**: the studio in `reels/studio-remotion/` (React, frame-based). Best for the kit's templates, monthly plans, footage blocks and data-driven scenes; `video-shotcraft` for product promos.
-- **hyperframes**: HTML + GSAP pages rendered to video (`motionmaxxing` to direct, `hyperframes` to build). Best for one-off motion pieces. If `reels/studio-hyperframes/` does not exist yet, say the HyperFrames starter is still coming and offer Remotion for this one.
+- **hyperframes**: HTML + GSAP pages rendered to video (`motionmaxxing` to direct, `hyperframes` to build). Best for one-off motion pieces. Start from `reels/studio-hyperframes/`; preview, stills and render with `npm run hf:preview`, `hf:snapshot`, `hf:render`.
 - Keep scene logic separate from the render call.
 
 ## 4. Constraints for every shot

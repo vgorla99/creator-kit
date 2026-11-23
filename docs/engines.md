@@ -8,12 +8,12 @@
 |---|---|---|
 | Folder | [`reels/studio-remotion/`](../reels/studio-remotion/) | [`reels/studio-hyperframes/`](../reels/studio-hyperframes/README.md) |
 | A reel is | a React component (TypeScript) | a web page: HTML + CSS, animated with GSAP |
-| Starter reel | `npm run starter` (from the `creator-kit` folder) | `npm run render` (inside `reels/studio-hyperframes/`) |
-| Preview | Remotion Studio (`npm start`) | HyperFrames Studio (`npm run preview`) |
-| Built-in checks | spec check + review sheet per render | `npm run check`: safe area, contrast, text held long enough, timing |
+| Starter reel | `npm run starter` (from the `creator-kit` folder) | `npm run hf:render` (from the `creator-kit` folder) |
+| Preview | Remotion Studio (`npm start`) | HyperFrames Studio (`npm run hf:preview`) |
+| Built-in checks | spec check + review sheet per render | `npm run hf:check`: safe area, contrast, text held long enough, timing |
 | What comes ready | monthly plans from a `plan.json`, footage engine, 10 animated blocks, carousels, post texts | a 3-scene starter (hook, tip, end card) you shape scene by scene |
-| Captions | word-timed captions built in (`remotion-captions` skill) | `embedded-captions` skill for talking-head clips (setup installs it) |
-| Claude skills setup adds | video-shotcraft, remotion-captions, remotion-best-practices | motionmaxxing, the HyperFrames bundle, embedded-captions |
+| Captions | word-timed captions built in (the studio's own caption layer) | part of the `hyperframes` skill, for talking-head clips (setup installs it) |
+| Claude skills setup adds | video-shotcraft, remotion-best-practices | motionmaxxing, hyperframes, hyperframes-cli, hyperframes-registry, media-use |
 | Licence | free for individuals and companies up to 3 people; bigger companies need a [Remotion company license](https://www.remotion.dev/license) | Apache-2.0, free for everyone |
 | Needs | Node 20+, FFmpeg | Node 22+, FFmpeg |
 
@@ -40,9 +40,9 @@ When you ask Claude Code for a reel, it reads `motion.engine` in `brand/brand.ya
 |---|---|---|
 | 1. Brief | `motion-brief`: the request restated as a short plan (beats, timing, words), you say OK | same |
 | 2. Build | a new reel from the starter (`npm run new -- <slug>`) or a month in `plan.json` | a new scene in `film/` or a new project from the starter; motionmaxxing for full motion films |
-| 3. Stills | review sheet with key frames, you say OK | `npm run snapshot`, you say OK |
-| 4. Render | `npm run reel -- <Id>` or `npm run produce` | `npm run check`, then `npm run render` |
-| 5. Captions | built in, from your voice-over timings | talking-head clip → `/embedded-captions` |
+| 3. Stills | review sheet with key frames, you say OK | `npm run hf:snapshot`, you say OK |
+| 4. Render | `npm run reel -- <Id>` or `npm run produce` | `npm run hf:check`, then `npm run hf:render` |
+| 5. Captions | built in, from your voice-over timings | talking-head clip → ask `/hyperframes` for captions |
 | 6. Package | the finished files move to `reels/content/00_Ready/<reel>/`: video, cover, caption text | same |
 | 7. Post | native app, or Postiz: see [posting-native.md](posting-native.md), [postiz-self-host.md](postiz-self-host.md), [postiz-cloud.md](postiz-cloud.md) | same |
 
