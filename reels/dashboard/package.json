@@ -1,0 +1,36 @@
+{
+  "name": "@creator-kit/dashboard",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Local dashboard to plan, review and track reels: Library, Calendar, Performance, Postiz analytics, Style",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "start": "npm run build && npm run server",
+    "server": "node server/src/index.ts",
+    "dev": "vite --config web/vite.config.ts",
+    "build": "vite build --config web/vite.config.ts",
+    "check": "node shared/src/check.ts && node web/src/prompt.check.ts",
+    "typecheck": "tsc -p server && tsc -p web"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.8",
+    "hono": "^4.13.18",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.5",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "tailwindcss": "^4.3.5",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8"
+  }
+}
