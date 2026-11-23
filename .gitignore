@@ -1,25 +1,42 @@
 node_modules/
 out/
 dist/
+backups/
 .DS_Store
 Thumbs.db
 *.log
+*.secrets
 .env
 .env.*
 !.env.example
 
 # Local-only media. Do not commit audio/video you don't hold a redistribution
-# license for — see README "Audio".
-public/audio/*
-!public/audio/.gitkeep
+# license for — see reels/sounds/SOUND-LIBRARY.md.
+reels/studio-remotion/public/audio/*
+!reels/studio-remotion/public/audio/.gitkeep
 
-# Footage engine: local media only (records live in assets/manifest.json).
-public/footage/
-public/library/
+# Footage engine: local media only (records live in reels/studio-remotion/assets/manifest.json).
+reels/studio-remotion/public/footage/
+reels/studio-remotion/public/library/
 
-# NOTE: src/kit/fonts.generated.ts is intentionally tracked. Regenerating it needs
-# the @fontsource packages installed, which render-only environments may not
-# have. See README "Fonts".
+# Sound packs: downloaded by each creator, never redistributed.
+reels/sounds/*/
+
+# Your videos, voice-overs and images stay on your computer.
+reels/content/**/*.mp4
+reels/content/**/*.mov
+reels/content/**/*.webm
+reels/content/**/*.mp3
+reels/content/**/*.wav
+reels/content/**/*.m4a
+reels/content/**/*.png
+reels/content/**/*.jpg
+reels/content/**/*.jpeg
+reels/content/**/*.webp
+
+# NOTE: reels/studio-remotion/src/kit/fonts.generated.ts is intentionally tracked.
+# Regenerating it needs the @fontsource packages installed, which render-only
+# environments may not have.
 
 # Sites: research notes and Search Console exports stay local.
 sites/research/*

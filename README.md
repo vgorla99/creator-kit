@@ -46,25 +46,34 @@ Claude Code runs the steps for you and stops at the gates that need a human: app
 <p align="center">
   <img src="assets/readme/gallery.jpg" alt="Five frames rendered by the kit: hook, tabs block, ruler block, custom scene, call to action" width="100%">
 </p>
-<p align="center"><sub>Real frames rendered by the kit from the example month in <code>content/example/</code>, using the demo brand.</sub></p>
+<p align="center"><sub>Real frames rendered by the kit from the example month in <code>reels/content/example/</code>, using the demo brand.</sub></p>
 
 ## Quick start
 
-Requires **Node 20+**. Remotion downloads its own headless Chromium and ships ffmpeg.
+You need **Node 20 or newer** ([nodejs.org](https://nodejs.org), pick "LTS") and **Git**. Remotion downloads its own headless browser and ships ffmpeg, so there is nothing else to install.
+
+Open a terminal (Windows: PowerShell, Mac: Terminal) and paste these lines one at a time:
 
 ```bash
 git clone https://github.com/vgorla99/creator-kit.git
 cd creator-kit
 npm install
-
-npm start                                                   # Remotion Studio: scrub every reel live
-npx remotion render src/index.ts 2601-V01 out/2601-V01.mp4  # render the example month's reel
-npm run demo                                                # the single-protagonist demo reel + review sheet
 ```
+
+Then try it. Every command below runs from the `creator-kit` folder:
+
+| Command | What it does |
+|---|---|
+| `npm run starter` | renders the 12-second starter reel in your brand colours, plus a review sheet |
+| `npm run produce -- example --only V01` | renders the example month's video: video, cover, review sheet, voice-over script, post text |
+| `npm start` | opens Remotion Studio in your browser, where you can scrub every reel |
+| `npm run brand:check` | checks your brand file and tells you in plain English what to fix |
+
+Your videos land in `reels/studio-remotion/out/`. The first render takes a minute longer while Remotion downloads its browser.
 
 Then make it yours:
 
-1. Open Claude Code in this folder and type `/brand-intake`: it asks you one question at a time, writes your [`brand/brand.yaml`](brand/brand.yaml) and [`brand/STYLE.md`](brand/STYLE.md), and checks them. Prefer editing by hand? Change `brand/brand.yaml` (it ships with an invented example brand, Kiln Hour) and run `npm run brand:check`, which tells you in plain English what to fix.
+1. Open Claude Code in this folder and type `/brand-intake`: it asks you one question at a time, writes your [`brand/brand.yaml`](brand/brand.yaml) and [`brand/STYLE.md`](brand/STYLE.md), and checks them. Prefer editing by hand? Change `brand/brand.yaml` (it ships with an invented example brand, Kiln Hour) and run `npm run brand:check`.
 2. Copy `.env.example` to `.env` and add the keys you need. Each one is optional:
 
    | Key | Used for |
@@ -73,7 +82,8 @@ Then make it yours:
    | `ELEVENLABS_API_KEY` | voice-over |
    | `PUBLORA_API_KEY` | scheduling finished videos |
 
-3. Copy [`content/example/`](content/example/) to `content/<yyyy-mm>/`, register it in [`src/plan/index.ts`](src/plan/index.ts), then run `npm run produce -- <yyyy-mm> --week 1` for drafts (video, cover, review sheet, voice-over script, post text).
+3. Plan a month: copy the folder [`reels/content/example/`](reels/content/example/) to `reels/content/<yyyy-mm>/` (for example `reels/content/2026-03/`), edit its `plan.json`, register it in [`reels/studio-remotion/src/plan/index.ts`](reels/studio-remotion/src/plan/index.ts) (Claude Code can do this for you), then run `npm run produce -- 2026-03 --week 1`.
+4. Optional: download the free sound-effects pack described in [`reels/sounds/SOUND-LIBRARY.md`](reels/sounds/SOUND-LIBRARY.md).
 
 The full reference (plan format, blocks, captions, audio, the motion kit) is in the **[reels guide](docs/reels-remotion.md)**.
 
@@ -115,21 +125,20 @@ Step by step, for non-developers: **[Launching your website](docs/sites-launch.m
 |---|---|
 | `brand/` | your brand: `brand.yaml` (the facts) and `STYLE.md` (the feel) |
 | `schema/` | the rules for `brand.yaml` and the checker behind `npm run brand:check` |
-| `src/footage/` | footage engine: clips or brand stages, overlays, 10 animated blocks, spoken captions |
-| `src/plan/` | monthly plan → reels and 4:5 carousels |
-| `src/kit/` | the motion language: easing, springs, transitions, type, review sheets |
-| `scripts/` | `produce`, `pexels`, `library`, `vo`, `doc`, `publora`, `check:captions` |
-| `content/example/` | a neutral example month that renders on a fresh clone |
+| `reels/studio-remotion/` | the Remotion reel studio: starter reel, footage engine, 10 animated blocks, captions, carousels, scripts |
+| `reels/content/` | what you post: ideas, ready, live, metrics, and month plans (`example/` renders on a fresh copy) |
+| `reels/sounds/` | how to get and index sound effects (the packs themselves stay on your computer) |
 | `sites/template/` | the website template: React + Vite + Tailwind, SEO scripts |
 | `sites/research/` | your niche research and monthly notes (stays on your computer) |
-| `assets/brand/` | Creator Kit logo files (SVG) |
+| `docs/` | guides: reels, posting, site launch |
+| `assets/` | Creator Kit logo files and README images |
 
 ## Roadmap
 
 - [x] Remotion reel engine, footage engine, monthly plans, carousels
 - [x] Production scripts: stock clips, voice-over, review documents, scheduling
 - [x] One `brand.yaml` with a schema, plus a guided brand intake and an invented example brand
-- [ ] `reels/` restructure
+- [x] `reels/` restructure: Remotion studio, content folders, sound library guide
 - [ ] HyperFrames studio as a second reel builder, side by side with Remotion
 - [ ] One-command setup for Windows and macOS, with a `doctor` check
 - [ ] `broll-scout`: licence-logged B-roll from Pexels, Pixabay and Wikimedia

@@ -1,0 +1,38 @@
+{
+  "name": "@creator-kit/studio-remotion",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Creator Kit reel studio (Remotion): footage engine, monthly plans, carousels, a starter reel. Reads ../../brand/brand.yaml.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "start": "remotion studio src/index.ts",
+    "new": "node scripts/new-reel.mjs",
+    "reel": "node scripts/reel.mjs",
+    "typecheck": "tsc --noEmit",
+    "fonts": "node scripts/generate-fonts.mjs",
+    "postinstall": "node scripts/generate-fonts.mjs",
+    "library": "node scripts/library.mjs",
+    "pexels": "node scripts/pexels.mjs",
+    "vo": "node scripts/vo.mjs",
+    "doc": "node scripts/content-doc.mjs",
+    "produce": "node scripts/produce.mjs",
+    "publora": "node scripts/publora.mjs",
+    "check:captions": "node scripts/check-captions.mjs"
+  },
+  "dependencies": {
+    "@fontsource/jetbrains-mono": "5.3.0",
+    "@fontsource/space-grotesk": "5.3.0",
+    "@remotion/cli": "4.0.447",
+    "ajv": "^8.20.0",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "remotion": "4.0.447",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^6.0.2"
+  }
+}

@@ -1,29 +1,58 @@
 # Reels with Remotion
 
-> Part of [Creator Kit](../README.md). This is the full guide to the Remotion reel kit and the footage engine as they are today. The single-protagonist style below is kept for reference; Creator Kit v2 replaces it.
+> Part of [Creator Kit](../README.md). This guide covers the Remotion reel studio in `reels/studio-remotion/`: the starter reel, monthly plans, the footage engine, captions and audio.
 
-**Morphing motion-graphics Instagram Reels, built with [Remotion](https://www.remotion.dev).** One shape (the protagonist) carries the whole story and becomes every graphic, and every transition grows out of it. Output is 1080×1920 at 30 fps and ≤ 60 s, with every render spec-checked.
+The studio makes **1080×1920 Instagram / TikTok reels at 30 fps, up to 60 seconds**, in your brand colours. Every render is checked against that spec.
 
-**Every reel is unique.** ReelsMaker is not a fill-in-the-blanks template. You get a **kit** (a shared motion language) and write a **new choreography for every reel**. Two reels share the look. They never share the moves.
+There are two ways to make a reel:
 
-```bash
-npm install
-npm run demo                        # renders the example reel -> out/LiftForLater.mp4 + review sheet
-npm run new -- grip-strength        # scaffold your own reel: src/reels/grip-strength ("GripStrength")
-npm start                           # Remotion Studio — scrub it live
-npm run reel -- GripStrength        # render + Instagram spec check + review sheet
+| Way | Good for | You write |
+|---|---|---|
+| **Monthly plan** (most people) | a steady posting rhythm | a `plan.json` with hooks, beats and voice-over lines; the engine builds every video, carousel and post text |
+| **Hand-built reel** | a one-off piece with its own moves | a small React file, starting from the starter reel |
+
+All commands run from the `creator-kit` folder (the one with `brand/` in it). You never need to open `reels/studio-remotion/` in a terminal.
+
+## Commands at a glance
+
+| Command | What it does |
+|---|---|
+| `npm install` | installs everything (once, and after updates) |
+| `npm run brand:check` | checks `brand/brand.yaml` and lists anything to fix in plain English |
+| `npm start` | opens Remotion Studio in your browser to scrub every reel |
+| `npm run starter` | renders the starter reel + its review sheet |
+| `npm run produce -- example --only V01` | renders the example month's video (works on a fresh copy) |
+| `npm run produce -- <month> --week 1` | silent drafts for a week of your plan |
+| `npm run produce -- <month> --final V01` | after you record the voice-over: cut it and render `final.mp4` |
+| `npm run doc -- <month>` | an HTML checklist for the month: scripts, captions, posting steps |
+| `npm run new -- <slug>` | a new hand-built reel, copied from the starter |
+| `npm run reel -- <Id>` | renders a hand-built reel + spec check + review sheet |
+| `npm run pexels -- search "<words>"` | finds portrait stock clips (needs `PEXELS_API_KEY` in `.env`) |
+| `npm run library -- list` | your own clips in the asset library |
+| `npm run typecheck` · `npm run check:captions` | self-checks for contributors |
+
+`<month>` is a folder name in `reels/content/`, such as `example` or `2026-03`. Renders land in `reels/studio-remotion/out/<month>/<ID>-<slug>/`.
+
+## Where things live
+
 ```
-
-Requires Node ≥ 20. Remotion downloads its own headless Chromium and ships ffmpeg/ffprobe.
-
+brand/brand.yaml              your name, handle, colours, wordmark, language: the ONLY file to reskin
+reels/
+├─ content/                   what you post
+│  ├─ 00_Ideas/ 00_Ready/ 01_Live/   one folder per stage of a post
+│  ├─ _metrics/metrics.csv    one row per post with its numbers
+│  ├─ example/                a demo month (plan.json + vo.json) that renders on a fresh copy
+│  └─ <yyyy-mm>/              your month plans
+├─ sounds/SOUND-LIBRARY.md    how to get sound effects + the index Claude reads
+└─ studio-remotion/           the Remotion studio
+   ├─ src/kit/                the motion language: easing, springs, transitions, type, review sheets
+   ├─ src/footage/            footage engine: clips or brand stages, overlays, blocks, captions
+   ├─ src/plan/               month plan → reels and 4:5 carousels
+   ├─ src/reels/_starter/     the starter reel that `npm run new` copies
+   ├─ scripts/                produce, doc, pexels, library, vo, publora, reel, new
+   ├─ public/                 audio and clips you add (git-ignored)
+   └─ out/                    your renders (git-ignored)
 ```
-brand/brand.yaml    your name, handle, 5 colors, wordmark, optional music — the ONLY file to reskin
-src/kit/            the motion language — shared by every reel
-src/reels/<slug>/   one video: its timeline, its protagonist, its scenes
-src/reels/_starter/ a tiny working reel that `npm run new` copies
-```
-
----
 
 ## 1. Make it yours: `brand/brand.yaml`
 
@@ -32,153 +61,134 @@ Run `/brand-intake` in Claude Code, or edit [`brand/brand.yaml`](../brand/brand.
 ```yaml
 brand:
   name: Kiln Hour          # bottom-right on every frame
-  handle: "@kilnhour"      # bottom-left on every frame + CTA button
+  handle: "@kilnhour"      # bottom-left on every frame + the starter's CTA button
+  language: en             # captions match number words in this language (en or de; English if unset)
 visual:
   colors:
     dark: "#1B1714"        # deep stage + ink on light stages
     light: "#F6EFE6"       # light stage + type on dark stages
-    primary: "#E8743F"     # the protagonist, highlights, CTA button: bright, glows on dark
-    secondary: "#5E8F7E"   # wipes, "after"/progress data: mid-tone
-    tertiary: "#3B2850"    # stat / CTA stage: deep, saturated
+    primary: "#E8743F"     # highlights, the accent dot, CTA buttons: bright, glows on dark
+    secondary: "#5E8F7E"   # wipes, rings, second-tier data
+    tertiary: "#3B2850"    # deep stage for stats and the CTA
   wordmark:                # optional; default = name split into bold first words + light last word
     prefix: KILN
     suffix: HOUR
+  end_card:
+    button: Follow for more  # the button on a carousel's last slide (default "LINK IN BIO")
 motion:
-  music: null              # or "audio/bed.mp3" under public/ (licensed tracks only)
+  music: null              # or "audio/bed.mp3" under reels/studio-remotion/public/ (licensed tracks only)
 ```
 
-`src/brand.ts` loads this file when Studio or a render starts; you don't edit it.
+- Colours are **contrast-checked when Studio or a render starts**. If a pair would be hard to read, it stops and names the pair to fix.
+- Text on any stage picks dark or light ink by actual contrast, so a reskin never needs per-scene colour edits.
+- **Fonts** (Space Grotesk + JetBrains Mono) are embedded in the code, so renders never fetch fonts. To change them: `npm i -w reels/studio-remotion @fontsource/<font>`, edit `FONTS` in `reels/studio-remotion/scripts/generate-fonts.mjs` and `FONT` in `src/kit/theme.ts`, then `npm run fonts`.
 
-- Colors are **contrast-checked at load**. If a pair would be illegible (e.g. `primary` on `dark` below 4.5:1), Studio and renders stop with a message naming the pair to fix.
-- Text on any stage picks dark or light ink by actual contrast (`inkOn()`), and small accents pick a visible accent (`accentOn()`), so a reskin never needs per-scene color edits.
-- **Fonts** (Space Grotesk + JetBrains Mono by default) are base64-embedded, so there are no render-time font fetches. To change them, `npm i @fontsource/<font>`, edit `FONTS` in `scripts/generate-fonts.mjs` and `FONT` in `src/kit/theme.ts`, then run `npm run fonts`.
+## 2. Monthly plans
 
-## 2. The motion language (what stays the same)
-
-1. **One protagonist.** A reel defines ONE shape as a pure function `dot(frame) => DotState`. `<Protagonist>` renders it with velocity squash-and-stretch and glow. Circle, coin, pill and button are one rounded rect with different `w / h / rx`, so it morphs into all of them.
-2. **Transitions are born from it.** No hard cuts, no plain crossfades.
-   - `CircleFlood`: the protagonist swells until it *is* the next stage.
-   - `BorderWipe`: a frame border closes in, then reopens on the next scene.
-3. **Stages walk the palette.** Each chapter has a solid stage color, and the corner chrome (mark, chapter counter, handle) adapts its ink automatically.
-4. **Two voices of type.**
-   - `MaskLine` (display face, slides up out of a mask) says the point.
-   - `Typewriter` (mono, typed with a block cursor) annotates the action.
-5. **Always moving.** Impact ripples, overshooting springs, slow spins, pulses, film grain. There are no dead frames.
-
-### Kit reference (`src/kit/`)
-
-| Module           | Gives you                                                                                                              |
-| ---------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `theme.ts`       | `W H FPS MAX_FRAMES`, palette `C` (from brand), `inkOn` / `accentOn` / `contrast`, `FONT`, `MARGIN`, `BRAND`           |
-| `anim.ts`        | `prog`, `tween`, `ease.*`, `springIn` (optionally bouncy), `hop` (parabolic arc), `squash` (impact), `rot`, `mix`, `typed` |
-| `protagonist.ts` | `DotState`, `DotFn`, `circle()`, `pill()`, `HIDDEN`                                                                    |
-| `svg.tsx`        | `<Protagonist>`, `<Ripple>`, `<CircleFlood>`, `<BorderWipe>`, `<Grain>`                                                |
-| `text.tsx`       | `<MaskLine>`, `<Typewriter>`, `<Fade>`, `<Chrome>`                                                                     |
-| `audio.tsx`      | `<MusicBed>` (fade in/out; silent when `brand.music` is null)                                                          |
-| `reel.ts`        | `defineReel()`: validates duration ≤ 60 s and review frames                                                            |
-| `Review.tsx`     | the review sheet, auto-registered as `<Id>-Review` for every reel                                                      |
-
-Everything animates from the frame number only (no `Math.random()`, no timers), so renders are deterministic.
-
-## 3. Making a reel (keep it unique)
-
-1. **Script.** Six beats or fewer: hook, problem, 1–3 points, proof/stat, CTA.
-2. **Plan the protagonist's journey.** For each beat, ask: *what does the shape become, or do, that SHOWS this point?* Write one line per beat before any code. The example reel, `src/reels/lift-for-later`:
-
-   | Beat       | The protagonist…                                                                 |
-   | ---------- | -------------------------------------------------------------------------------- |
-   | Hook       | drops, bounces, is tossed like a coin ("muscle is your pension")                 |
-   | Problem    | floods the screen, reappears, gets bitten smaller each decade, fails a staircase |
-   | Strength   | outweighs a crowd of "steps" dots on a seesaw                                    |
-   | Chair test | does chair-stands, then flies into a capsule as the 15th rep                     |
-   | Stat       | is the glowing core of an orbit; an arc lights 17% of the ring; a flower blooms  |
-   | CTA        | the ring implodes into it, it flares into a sun, then squashes into the button   |
-
-3. **Uniqueness check.** Before building, confirm:
-   - [ ] No beat reuses a metaphor from an earlier reel.
-   - [ ] The transition types and order differ from your last reel.
-   - [ ] The stage-color sequence differs from your last reel.
-   - [ ] At least one prop or behavior exists that no earlier reel had.
-4. **Scaffold.** `npm run new -- <slug>`, then replace the starter's timeline, `dot()` and chapters. For bigger reels, split the folder the way `lift-for-later/` does (`timeline.ts`, `geometry.ts`, `dot.ts`, `scenes/`).
-5. **Review.** `npm run reel -- <Id>`, then open `out/<Id>-review.png` (a tile of frozen frames around every cut) and check that:
-   - every transition covers fully and reveals cleanly;
-   - the protagonist is visibly the same object across cuts;
-   - nothing is stranded or overlapping;
-   - text is readable on every stage.
-
-   Then watch the MP4 at full speed.
-6. **Promote tools, not choreography.** If you invent a new transition or text effect worth reusing, move it into `src/kit/`.
-
-## Footage engine & monthly plans
-
-A second way to make reels: describe a month in JSON and the engine builds every video (clips or brand stages + overlays, captions, blocks), carousels, review sheets and post packs. `content/example/` is a neutral month that renders on a fresh clone; real months are registered in `src/plan/index.ts`.
+A month is a folder in `reels/content/` with a `plan.json` (what to make) and a `vo.json` (filled in automatically once voice-overs exist). Start by copying `reels/content/example/` to `reels/content/2026-03/`, then register the month in `reels/studio-remotion/src/plan/index.ts` (two import lines and one entry; the file shows how, and Claude Code can do it for you).
 
 ### plan.json
 
 ```jsonc
 {
-  "month": "2026-01",
-  "defaults": { "cta": { "button": "LINK IN BIO", "sub": "…", "note": "…" }, "timezone": "UTC", "videoTime": "18:00", "voBreak": "<break time=\"1.0s\" />", "baseTags": [], "igTags": [] },
+  "month": "2026-03",            // year-month; reels get ids like 2603-V01
+  "title": "March",
+  "defaults": {
+    "cta": { "button": "LINK IN BIO", "sub": "…", "note": "…" },
+    "timezone": "UTC", "videoTime": "18:00", "carouselTime": "12:00",
+    "voice": "calm, warm", "voBreak": "<break time=\"1.0s\" />",
+    "baseTags": [], "igTags": []
+  },
+  "weeks": [{ "n": 1, "label": "Week 1", "from": "2026-03-01", "to": "2026-03-07", "approveBy": "2026-02-28" }],
   "videos": [{
-    "id": "V01", "slug": "demo",
-    "line": "footage",            // "footage" = library clips · "motion" = brand stages + blocks
+    "id": "V01", "slug": "demo", "date": "2026-03-02",
+    "line": "motion",            // "motion" = brand stages + blocks · "footage" = library clips
     "hook": ["LINE ONE", "LINE TWO"],
-    "beats": [{ "title": ["TWO", "LINES"], "vo": "…", "shot": { "asset": "<library id>" } /* or "block": {…} */, "caption": "" }],
+    "beats": [{ "title": ["TWO", "LINES"], "vo": "What the voice says.", "block": { "type": "stat", "value": "12", "label": "pieces" } }],
     "ctaVo": "…",
     "ctaShot": { "asset": "<library id>" }   // footage videos only
   }],
-  "carousels": [{ "id": "C01", "slug": "demo", "slides": ["Head | sub", "Head | sub"] }]   // 2–10 slides
+  "carousels": [{ "id": "C01", "slug": "demo", "date": "2026-03-02", "slides": ["Head | sub", "Head | sub"] }]   // 2–10 slides
 }
 ```
 
-### Blocks (middle band, y 1010–1350)
+The example plan also shows `caption`, `hashtags`, `firstComment`, `igCaption` and `replies`, which go into each post's `post.txt`.
+
+### Blocks (the graphic in the middle of a beat)
 
 | Block | Example |
 |---|---|
-| `stat` | `{ "type": "stat", "value": "90", "label": "per jar" }` |
+| `stat` | `{ "type": "stat", "value": "90", "label": "minutes in the kiln" }` |
 | `list` | `{ "type": "list", "items": ["One", "Two"] }` |
 | `compare` | `{ "type": "compare", "left": { "title": "A", "items": ["…"] }, "right": { "title": "B", "items": ["…"] } }` |
-| `verdict` | `{ "type": "verdict", "verdict": "FAKT" }` |
-| `jar` | `{ "type": "jar", "label": "PRODUCT", "sub": "DESCRIPTOR" }` (mark from `BRAND.mark`) |
-| `bars` | `{ "type": "bars", "items": [{ "label": "A", "value": 40, "unit": "mg" }] }` |
-| `focus` | `{ "type": "focus", "rows": [{ "label": "A", "value": "10 mg" }] }` |
+| `verdict` | `{ "type": "verdict", "verdict": "MYTH" }` (`MYTH`, `FACT` or `AVOID`) |
+| `jar` | `{ "type": "jar", "label": "PRODUCT", "sub": "DESCRIPTOR" }` (wordmark from your brand) |
+| `bars` | `{ "type": "bars", "items": [{ "label": "A", "value": 40, "unit": "g" }] }` |
+| `focus` | `{ "type": "focus", "rows": [{ "label": "A", "value": "10 g" }] }` |
 | `flow` | `{ "type": "flow", "from": ["A", "B"], "to": "C" }` |
 | `tabs` | `{ "type": "tabs", "tabs": [{ "title": "A", "text": "…" }] }` |
-| `ruler` | `{ "type": "ruler", "min": 0, "max": 20, "mark": [8, 12], "label": "Range", "unit": "units" }` |
+| `ruler` | `{ "type": "ruler", "min": 0, "max": 20, "mark": [8, 12], "label": "Range", "unit": "cm" }` |
 
-**Only real numbers**: values come from a label or from numbers the VO says. Never invent stats. Specs are validated at load time, so a bad block fails before rendering.
+**Only real numbers**: values come from a label or from numbers the voice-over says. Never invent stats. Plans are checked when Studio or a render starts, so a bad block fails before anything renders.
 
 ### Captions
 
-Automatic from the VO: each line is cut into 1–3 word chunks, the spoken word pops in the accent colour. The headline counts as a caption, so sentences it already says are skipped. A beat's `caption` overrides the auto text (`""` = none). Beat notes are hidden when captions are on. The number-word table is German; other languages need their own (see `Captions.tsx`).
+Captions are made from the voice-over: each line is cut into 1–3 word chunks and the spoken word pops in your primary colour. The headline counts as a caption, so a sentence it already says is skipped ("Eight steps" is skipped under an "8 STEPS" headline). A beat's `caption` overrides the automatic text (`""` = none).
+
+Number words are matched in your `brand.language`: English and German tables ship with the kit, English is the default. To add a language, add a table to `NUMBERS` in `src/footage/Captions.tsx`, a line in `langOf()`, and a few cases to `scripts/check-captions.mjs`.
 
 ### Audio
 
-Put `vo.mp3` (ElevenLabs, keep the `<break>` tags) and optionally `music.mp3` in the video's `out/<month>/<ID>-<slug>/` folder, then `npm run produce -- <month> --final <ID>`. The music bed sits about 14 dB under the VO (`MUSIC_UNDER_VO = 0.18`). Only use music you hold a license for.
+1. `npm run produce -- <month> --week 1` writes `vo-script.txt` next to each draft. Record it (for example in ElevenLabs) and **keep the `<break>` tags**: the audio is cut at those pauses.
+2. Save the recording as `vo.mp3` in the video's folder in `reels/studio-remotion/out/<month>/<ID>-<slug>/`. Optionally add `music.mp3` (a track you hold a licence for); it sits about 14 dB under the voice.
+3. `npm run produce -- <month> --final <ID>` cuts the voice-over and renders `final.mp4`.
 
-### Workflow
+For sound effects, see [`reels/sounds/SOUND-LIBRARY.md`](../reels/sounds/SOUND-LIBRARY.md).
 
-1. `npm run pexels -- search "…"` then `get <id>`: stock clips into the asset library (author and license recorded in `assets/manifest.json`; `npm run library` for your own).
-2. `npm run produce -- <month> --week N`: drafts (video, cover, review sheet, VO script, post text, slides).
-3. Review the sheets, record the VO, add music.
-4. `npm run produce -- <month> --final <ID>`: cut and render `final.mp4`.
-5. `npm run doc -- <month>` for an HTML review document; `npm run publora` to schedule.
+### A month, step by step
 
-Copy `.env.example` to `.env` for `PEXELS_API_KEY`, `ELEVENLABS_API_KEY`, `PUBLORA_API_KEY`. Media (`public/footage`, `public/library`, `out/`) stays local. `npm run check:captions` self-checks the caption rules.
+1. Write the plan (or ask Claude Code to draft it from your brand file).
+2. Footage videos: `npm run pexels -- search "…"` then `npm run pexels -- get <id>` adds stock clips to the library (author and licence recorded in `reels/studio-remotion/assets/manifest.json`); `npm run library` adds your own.
+3. `npm run produce -- <month> --week N`: silent drafts (video, cover, review sheet, voice-over script, post text, carousel slides).
+4. Watch the drafts, record the voice-overs, add music.
+5. `npm run produce -- <month> --final <ID>`: `final.mp4`.
+6. `npm run doc -- <month>` for an HTML checklist of the month. Posting is always a separate step you approve: see the [posting guides](../README.md#posting).
 
-## Instagram spec (hard requirement)
+## 3. Hand-built reels
 
-| Property   | Value                | Enforced by                                                        |
-| ---------- | -------------------- | ------------------------------------------------------------------ |
-| Resolution | 1080 × 1920 (9:16)   | every composition (`kit/theme.ts`), then ffprobe in `npm run reel` |
-| Frame rate | 30 fps               | same                                                               |
-| Duration   | ≤ 60 s (1800 frames) | `defineReel()` throws at load; ffprobe re-checks the file          |
+`npm run new -- my-idea` copies the starter into `reels/studio-remotion/src/reels/my-idea/` and registers it as `MyIdea`. Open `npm start`, pick it, and replace the words and the moves. `npm run reel -- MyIdea` renders it, checks it against the Instagram spec, and saves a review sheet (a grid of frames around every cut) in `reels/studio-remotion/out/`.
+
+The starter shows the whole contract in one file: a timeline in frames, chapters on brand-colour stages, two transitions (`CircleFlood` grows a colour out of a point, `BorderWipe` closes a frame border and reopens it) and a call to action. Make every reel its own idea; keep the kit.
+
+### Kit reference (`reels/studio-remotion/src/kit/`)
+
+| Module | Gives you |
+|---|---|
+| `theme.ts` | `W H FPS MAX_FRAMES`, palette `C` (from brand), `inkOn` / `accentOn` / `contrast`, `FONT`, `MARGIN`, `BRAND` |
+| `anim.ts` | `prog`, `tween`, `ease.*`, `springIn` (optionally bouncy), `hop`, `squash`, `rot`, `mix`, `typed` |
+| `svg.tsx` | `<CircleFlood>`, `<BorderWipe>`, `<Ripple>`, `<Grain>`, and `<Protagonist>` (the accent dot the footage engine uses) |
+| `text.tsx` | `<MaskLine>` (headline slides up out of a mask), `<Typewriter>` (mono annotation), `<Fade>`, `<Chrome>` (corner wordmark, chapter counter, handle) |
+| `audio.tsx` | `<MusicBed>` (fades in and out; silent when `motion.music` is null), `<VoiceOver>` |
+| `reel.ts` | `defineReel()`: checks duration ≤ 60 s and the review frames |
+| `Review.tsx` | the review sheet, registered as `<Id>-Review` for every reel |
+
+Everything animates from the frame number only (no random numbers, no timers), so renders are repeatable.
+
+## Instagram spec (checked on every render)
+
+| Property | Value | Checked by |
+|---|---|---|
+| Resolution | 1080 × 1920 (9:16) | every composition, then ffprobe in `npm run reel` / `produce` |
+| Frame rate | 30 fps | same |
+| Duration | ≤ 60 s (1800 frames) | `defineReel()` and the plan checks stop at load; ffprobe re-checks the file |
+| File size | ≤ 50 MB | `produce` (re-renders once at a smaller size if needed) |
 
 ## Notes
 
-- **Facts:** every on-screen statistic needs a source, so put the citation on screen (the example's stat chapter does). The example's chair-stand numbers are illustrative.
-- **Audio:** none ships with the repo (`public/audio/*` is gitignored). Only add tracks you hold a license for.
-- **Troubleshooting:** on Windows a render can fail once with `remotion-audio-mixing\0.wav: No such file or directory`. That's a transient temp-folder race; run the command again.
+- **Facts:** every on-screen number needs a source. Put the source on screen or in the caption.
+- **Media stays local:** audio, clips, renders and anything you drop in `reels/content/` are git-ignored. Only add music and sounds you hold a licence for.
+- **Keys** live in `.env` at the top of the `creator-kit` folder (copy `.env.example`).
+- **Troubleshooting:** on Windows a render can fail once with `remotion-audio-mixing\0.wav: No such file or directory`. That's a temporary-folder race; run the command again.
 - **Older versions:** JSON-script text-card reels live at tag [`v1.0.0`](https://github.com/vgorla99/creator-kit/tree/v1.0.0); the morphing single-protagonist kit at [`v1.1.0`](https://github.com/vgorla99/creator-kit/tree/v1.1.0).
 
 ## License

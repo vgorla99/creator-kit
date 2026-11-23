@@ -132,7 +132,7 @@
         "fps": { "description": "one of 24, 25, 30 or 60", "enum": [24, 25, 30, 60] },
         "locked_terms": { "description": "a list of motion words you want to keep using, like \"spring pop\"", "type": "array", "items": { "description": "a short phrase", "type": "string", "minLength": 1 } },
         "rejected_terms": { "description": "a list of motion words you never want, like \"glitch\"", "type": "array", "items": { "description": "a short phrase", "type": "string", "minLength": 1 } },
-        "music": { "description": "a path to a music file under public/ you hold the licence for, like audio/bed.mp3, or null for no music", "type": ["string", "null"], "pattern": "^[^\\s/].*\\.(mp3|wav|m4a|aac|ogg)$" }
+        "music": { "description": "a path to a music file under reels/studio-remotion/public/ you hold the licence for, like audio/bed.mp3, or null for no music", "type": ["string", "null"], "pattern": "^[^\\s/].*\\.(mp3|wav|m4a|aac|ogg)$" }
       }
     },
     "content": {
