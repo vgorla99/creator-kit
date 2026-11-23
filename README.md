@@ -17,6 +17,7 @@
 <p align="center">
   <a href="#quick-start">Quick start</a> ·
   <a href="#how-it-works">How it works</a> ·
+  <a href="#posting">Posting</a> ·
   <a href="#whats-inside">What's inside</a> ·
   <a href="#roadmap">Roadmap</a> ·
   <a href="docs/reels-remotion.md">Reels guide</a>
@@ -75,6 +76,16 @@ Then make it yours:
 
 The full reference (plan format, blocks, captions, audio, the motion kit) is in the **[reels guide](docs/reels-remotion.md)**.
 
+## Posting
+
+Rendering never posts anything. When a reel is approved, schedule it one of three ways:
+
+| Route | Cost | Effort | Guide |
+|---|---|---|---|
+| Each platform's own scheduler | free | a few minutes per reel, per platform | [Native schedulers](docs/posting-native.md) |
+| Postiz on your own small server | about €7–8/month, or €0 on a free-tier server | about 2 hours to set up, then one calendar | [Postiz self-hosted](docs/postiz-self-host.md) |
+| Postiz Cloud | from $29/month | 20 minutes, nothing to maintain | [Postiz Cloud](docs/postiz-cloud.md) |
+
 ## What's inside
 
 | Path | What it is |
@@ -98,7 +109,7 @@ The full reference (plan format, blocks, captions, audio, the motion kit) is in 
 - [ ] One-command setup for Windows and macOS, with a `doctor` check
 - [ ] `broll-scout`: licence-logged B-roll from Pexels, Pixabay and Wikimedia
 - [ ] Local dashboard: plans, review, style, analytics
-- [ ] Postiz guides: self-hosted and cloud
+- [ ] Posting guides: Postiz self-hosted, Postiz Cloud, native schedulers (written; self-host guide being tested on a fresh server)
 - [ ] `sites/`: React + Vite + Tailwind template, niche research, Cloudflare Pages deploy
 
 ## Principles
