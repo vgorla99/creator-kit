@@ -3,6 +3,7 @@
 </p>
 
 <p align="center">
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-2.0.0-FF5A36?style=flat-square" alt="Version 2.0.0"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-FF5A36?style=flat-square" alt="MIT license"></a>
   <img src="https://img.shields.io/badge/node-%E2%89%A522.18-0D0D12?style=flat-square" alt="Node 22.18 or newer">
   <img src="https://img.shields.io/badge/engines-Remotion%20%C2%B7%20HyperFrames-0D0D12?style=flat-square" alt="Remotion and HyperFrames">
@@ -260,7 +261,7 @@ All guides in one list: [docs/README.md](docs/README.md).
 - [x] `sites/`: React + Vite + Tailwind template, niche research, Cloudflare Pages deploy
 - [x] Guides for every part
 - [ ] Postiz self-host guide tested end to end on a fresh server
-- [ ] v2.0.0 release
+- [x] v2.0.0 release ([what changed](CHANGELOG.md))
 
 ## Principles
 
