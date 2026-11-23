@@ -27,7 +27,7 @@
 ---
 
 > [!NOTE]
-> **Creator Kit v2 is being built in the open.** The Remotion reel engine works today and is documented below. Your brand lives in one file, [`brand/brand.yaml`](brand/brand.yaml). The site builder lives in [`sites/`](#sites). The HyperFrames studio and the one-command setup are on the [roadmap](#roadmap).
+> **Creator Kit v2 is being built in the open.** The Remotion reel engine, the site builder and the one-command setup work today. Your brand lives in one file, [`brand/brand.yaml`](brand/brand.yaml). The HyperFrames studio is on the [roadmap](#roadmap).
 
 ## How it works
 
@@ -50,42 +50,79 @@ Claude Code runs the steps for you and stops at the gates that need a human: app
 
 ## Quick start
 
-You need **Node 20 or newer** ([nodejs.org](https://nodejs.org), pick "LTS") and **Git**. Remotion downloads its own headless browser and ships ffmpeg, so there is nothing else to install.
+**Before you start** you need a [Claude Pro plan](https://claude.com/pricing) (or higher) and [Claude Code](https://claude.com/claude-code) installed. That's it: the setup installs everything else. It takes 10 to 20 minutes and about 3 GB of space.
 
-Open a terminal (Windows: PowerShell, Mac: Terminal) and paste these lines one at a time:
+### 1. Download the kit
 
-```bash
-git clone https://github.com/vgorla99/creator-kit.git
-cd creator-kit
-npm install
+On this page, click the green **Code** button → **Download ZIP**, and unzip it somewhere easy to find, like your Documents folder. (Know git? `git clone https://github.com/vgorla99/creator-kit.git` works too.)
+
+### 2. Run the setup (one command)
+
+Open a terminal **inside the kit's folder**:
+
+- **Windows:** open the folder in File Explorer, click the address bar at the top, type `powershell` and press Enter.
+- **Mac:** open the Terminal app, type `cd ` (with a space), drag the folder onto the Terminal window and press Enter.
+
+Then copy this line, paste it and press Enter:
+
+| Windows | Mac |
+|---|---|
+| `powershell -ExecutionPolicy Bypass -File setup\setup.ps1` | `bash setup/setup.sh` |
+
+The setup asks what you want to make (reels, websites or both) and, for reels, which video engine. Then it lists everything it will install and **waits for your yes**. It installs only what is missing (Node.js, Python, uv, ffmpeg, Git, GitHub CLI), the kit's packages and its Claude Code skills, then checks everything and renders a test picture. Windows may ask for permission once or twice; click **Yes**.
+
+It ends with **Done** or tells you, in plain English, what to fix. You can run it again any time; it picks up where it left off. To re-check later: `npm run doctor`.
+
+### 3. Make it yours: `/brand-intake`
+
+Open Claude Code in the same folder (type `claude` in that terminal, or open the folder in the Claude desktop app) and type:
+
+```
+/brand-intake
 ```
 
-Then try it. Every command below runs from the `creator-kit` folder:
+Claude asks one question at a time (name, audience, colours, fonts, voice, posting days…) and writes your brand file. Until you do this, the kit uses an invented example brand, Kiln Hour.
+
+### 4. Your first reel or website
+
+- **Reel:** type `npm run starter` in the terminal. Your 12-second starter reel, in your colours, lands in `reels/studio-remotion/out/Starter.mp4`. Or just tell Claude: *"make a reel about …"*. It plans with you, shows you stills, and only renders when you say OK.
+- **Website:** tell Claude `/site-builder`. It plans the pages with you, builds them, and walks you through putting the site online for free. Step by step: [Launching your website](docs/sites-launch.md).
+
+Nothing is ever posted without you: posting is a separate step where Claude shows you the exact video, channel, time and caption and waits for your yes.
+
+<details>
+<summary><b>Useful commands</b> (all run from the kit's folder)</summary>
 
 | Command | What it does |
 |---|---|
-| `npm run starter` | renders the 12-second starter reel in your brand colours, plus a review sheet |
+| `npm run doctor` | checks your computer and the kit, and explains any fix |
+| `npm run brand:check` | checks your brand file and tells you in plain English what to fix |
+| `npm run starter` | renders the starter reel in your brand colours, plus a review sheet |
 | `npm run produce -- example --only V01` | renders the example month's video: video, cover, review sheet, voice-over script, post text |
 | `npm start` | opens Remotion Studio in your browser, where you can scrub every reel |
-| `npm run brand:check` | checks your brand file and tells you in plain English what to fix |
 
-Your videos land in `reels/studio-remotion/out/`. The first render takes a minute longer while Remotion downloads its browser.
+Keys for optional services go in `.env` (the setup creates it; every key is optional and stays on your computer):
 
-Then make it yours:
+| Key | Used for |
+|---|---|
+| `PEXELS_API_KEY` | searching and downloading stock clips |
+| `ELEVENLABS_API_KEY` | voice-over |
+| `POSTIZ_API_KEY`, `POSTIZ_API_URL` | scheduling with Postiz (see [Posting](#posting)) |
+| `PUBLORA_API_KEY` | scheduling with Publora |
 
-1. Open Claude Code in this folder and type `/brand-intake`: it asks you one question at a time, writes your [`brand/brand.yaml`](brand/brand.yaml) and [`brand/STYLE.md`](brand/STYLE.md), and checks them. Prefer editing by hand? Change `brand/brand.yaml` (it ships with an invented example brand, Kiln Hour) and run `npm run brand:check`.
-2. Copy `.env.example` to `.env` and add the keys you need. Each one is optional:
+Plan a month: copy [`reels/content/example/`](reels/content/example/) to `reels/content/<yyyy-mm>/`, edit its `plan.json` (Claude Code can draft it from your brand file and your numbers), then `npm run produce -- <yyyy-mm> --week 1`. Sound effects: see [`reels/sounds/SOUND-LIBRARY.md`](reels/sounds/SOUND-LIBRARY.md). The full reference is in the **[reels guide](docs/reels-remotion.md)**.
 
-   | Key | Used for |
-   |---|---|
-   | `PEXELS_API_KEY` | searching and downloading stock clips |
-   | `ELEVENLABS_API_KEY` | voice-over |
-   | `PUBLORA_API_KEY` | scheduling finished videos |
+</details>
 
-3. Plan a month: copy the folder [`reels/content/example/`](reels/content/example/) to `reels/content/<yyyy-mm>/` (for example `reels/content/2026-03/`), edit its `plan.json`, register it in [`reels/studio-remotion/src/plan/index.ts`](reels/studio-remotion/src/plan/index.ts) (Claude Code can do this for you), then run `npm run produce -- 2026-03 --week 1`.
-4. Optional: download the free sound-effects pack described in [`reels/sounds/SOUND-LIBRARY.md`](reels/sounds/SOUND-LIBRARY.md).
+<details>
+<summary><b>If something goes wrong</b></summary>
 
-The full reference (plan format, blocks, captions, audio, the motion kit) is in the **[reels guide](docs/reels-remotion.md)**.
+- **"running scripts is disabled on this system"** (Windows): use the exact line above; it starts with `powershell -ExecutionPolicy Bypass`, which allows the setup to run once without changing your settings.
+- **"was installed, but this window cannot see it yet"**: close the terminal, open a new one in the kit's folder, and run the setup again.
+- **No `winget`** (older Windows 10): install **App Installer** from the Microsoft Store, then run the setup again.
+- **Anything else:** every run saves a log in `setup/logs/` (it never contains your keys). Open Claude Code in the folder and ask it to read the newest log and help.
+
+</details>
 
 ## Posting
 
@@ -130,6 +167,8 @@ Step by step, for non-developers: **[Launching your website](docs/sites-launch.m
 | `reels/sounds/` | how to get and index sound effects (the packs themselves stay on your computer) |
 | `sites/template/` | the website template: React + Vite + Tailwind, SEO scripts |
 | `sites/research/` | your niche research and monthly notes (stays on your computer) |
+| `setup/` | the one-command setup, `doctor`, and the list of skills it installs (`skills.lock.yaml`) |
+| `.claude/` | how Claude works here (`CLAUDE.md`), safe permissions, and the kit's own skills |
 | `docs/` | guides: reels, posting, site launch |
 | `assets/` | Creator Kit logo files and README images |
 
@@ -140,7 +179,7 @@ Step by step, for non-developers: **[Launching your website](docs/sites-launch.m
 - [x] One `brand.yaml` with a schema, plus a guided brand intake and an invented example brand
 - [x] `reels/` restructure: Remotion studio, content folders, sound library guide
 - [ ] HyperFrames studio as a second reel builder, side by side with Remotion
-- [ ] One-command setup for Windows and macOS, with a `doctor` check
+- [x] One-command setup for Windows and macOS, with a `doctor` check
 - [ ] `broll-scout`: licence-logged B-roll from Pexels, Pixabay and Wikimedia
 - [ ] Local dashboard: plans, review, style, analytics
 - [ ] Posting guides: Postiz self-hosted, Postiz Cloud, native schedulers (written; self-host guide being tested on a fresh server)
@@ -164,7 +203,7 @@ This repository was called `reelsmaker`; old links redirect here.
 
 ## License
 
-Code: [MIT](LICENSE). Fonts: SIL Open Font License.
+Code: [MIT](LICENSE). Fonts: SIL Open Font License. Third-party skills and tools: see [CREDITS.md](CREDITS.md).
 
 [Remotion](https://www.remotion.dev) has its own licence. It is free for individuals and companies of up to 3 people; larger companies need a [Remotion company license](https://www.remotion.dev/license).
 
