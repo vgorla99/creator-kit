@@ -1,43 +1,34 @@
 {
-  "name": "reelsmaker",
+  "name": "creator-kit",
   "version": "2.0.0",
   "private": true,
-  "description": "ReelsMaker — morphing motion-graphics Instagram Reels with Remotion: one protagonist, a unique choreography per reel (1080x1920, 30fps, <=60s)",
+  "description": "Creator Kit: one brand file in, motion-graphics reels (and soon websites) out",
   "license": "MIT",
   "type": "module",
   "engines": {
     "node": ">=20"
   },
+  "workspaces": [
+    "reels/studio-remotion"
+  ],
   "scripts": {
-    "start": "remotion studio src/index.ts",
-    "new": "node scripts/new-reel.mjs",
-    "reel": "node scripts/reel.mjs",
-    "demo": "node scripts/reel.mjs LiftForLater",
-    "typecheck": "tsc --noEmit",
-    "fonts": "node scripts/generate-fonts.mjs",
-    "postinstall": "node scripts/generate-fonts.mjs",
-    "library": "node scripts/library.mjs",
-    "pexels": "node scripts/pexels.mjs",
-    "vo": "node scripts/vo.mjs",
-    "doc": "node scripts/content-doc.mjs",
-    "produce": "node scripts/produce.mjs",
-    "publora": "node scripts/publora.mjs",
-    "check:captions": "node scripts/check-captions.mjs",
-    "brand:check": "node scripts/brand-check.mjs"
+    "brand:check": "node scripts/brand-check.mjs",
+    "start": "npm run start -w reels/studio-remotion",
+    "starter": "npm run reel -w reels/studio-remotion -- Starter",
+    "new": "npm run new -w reels/studio-remotion --",
+    "reel": "npm run reel -w reels/studio-remotion --",
+    "produce": "npm run produce -w reels/studio-remotion --",
+    "doc": "npm run doc -w reels/studio-remotion --",
+    "pexels": "npm run pexels -w reels/studio-remotion --",
+    "library": "npm run library -w reels/studio-remotion --",
+    "vo": "npm run vo -w reels/studio-remotion --",
+    "publora": "npm run publora -w reels/studio-remotion --",
+    "fonts": "npm run fonts -w reels/studio-remotion",
+    "typecheck": "npm run typecheck -w reels/studio-remotion",
+    "check:captions": "npm run check:captions -w reels/studio-remotion"
   },
   "dependencies": {
-    "@fontsource/jetbrains-mono": "5.3.0",
-    "@fontsource/space-grotesk": "5.3.0",
-    "@remotion/cli": "4.0.447",
     "ajv": "^8.20.0",
-    "react": "^19.2.5",
-    "react-dom": "^19.2.5",
-    "remotion": "4.0.447",
     "yaml": "^2.9.1"
-  },
-  "devDependencies": {
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
-    "typescript": "^6.0.2"
   }
 }

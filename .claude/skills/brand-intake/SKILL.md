@@ -65,4 +65,4 @@ Optional extras, only if the conversation makes them natural: series names, hook
    ```
    Then ask: "Does this look right? Say OK, or tell me what to change."
 5. Wait for OK. Change anything they ask, re-run `npm run brand:check`, read the 5 lines back again.
-6. After OK: tell them their reels now use this brand (Studio: `npm start`; a quick check image: `npx remotion still src/index.ts 2601-V01 out/check.png --frame=150`). Don't commit or push unless they ask.
+6. After OK: tell them their reels now use this brand (Studio: `npm start`; a quick check: `npm run starter`, then open `reels/studio-remotion/out/Starter-review.png`). Don't commit or push unless they ask.
