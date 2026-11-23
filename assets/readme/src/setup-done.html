@@ -1,0 +1,38 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="base.css"><style>
+/* The end of a real Windows setup run (setup.ps1 -Parts reels -Engine hyperframes), copied from setup/logs/.
+   The folder and "Log saved to" lines are left out because they show the user's own path. */
+body { width: 1280px; height: 800px; overflow: hidden; background: var(--ink); position: relative; }
+.win { position: absolute; left: 40px; top: 32px; right: 40px; bottom: 32px; border-radius: 14px; background: #0C0C0C; box-shadow: 0 0 0 1px #2A2A33, 0 40px 80px -30px rgba(0,0,0,.8); overflow: hidden; }
+.bar { height: 38px; background: #1F1F1F; display: flex; align-items: center; padding-left: 16px; gap: 10px; font-family: "SG"; font-size: 13px; color: #CCCCCC; }
+.bar i { width: 14px; height: 14px; border-radius: 3px; background: #2D6FD6; }
+pre { margin: 0; padding: 18px 24px; font-family: "JB"; font-size: 14.5px; line-height: 1.55; color: #CCCCCC; white-space: pre; }
+.ok { color: #16C60C; } .dim { color: #8A8A8A; } .hi { color: #F2F2F2; font-weight: 700; } .y { color: #F9F1A5; }
+</style></head><body><div class="win"><div class="bar"><i></i>Windows PowerShell</div><pre><span class="y">&gt;&gt; Health check</span>
+Creator Kit doctor
+
+<span class="ok">✔</span> Node.js 22.18 or newer  <span class="dim">(you have 24.13.1)</span>
+<span class="ok">✔</span> Python 3.12 or newer  <span class="dim">(Python 3.14.4)</span>
+<span class="ok">✔</span> uv (runs the kit's small Python helpers)  <span class="dim">(uv 0.13.9 (6b2d39dcc 2026-11-17 x86_64-pc-windows-msvc))</span>
+<span class="ok">✔</span> ffmpeg (checks and cuts video)  <span class="dim">(ffmpeg version 9.0.2-full_build-www.gyan)</span>
+<span class="ok">✔</span> git (downloads the skills)  <span class="dim">(git version 2.53.0.windows.1)</span>
+<span class="ok">✔</span> Claude Code  <span class="dim">(2.1.301 (Claude Code))</span>
+<span class="ok">✔</span> Kit packages installed  <span class="dim">(node_modules is there)</span>
+<span class="ok">✔</span> Brand file (brand/brand.yaml)  <span class="dim">(✔ brand\brand.yaml is valid: Kiln Hour (@kilnhour), engine remotion, colours pass contrast.)</span>
+<span class="ok">✔</span> Reel studio installed (Remotion)  <span class="dim">(found)</span>
+<span class="ok">✔</span> Dashboard installed (npm run dashboard)  <span class="dim">(found)</span>
+<span class="ok">✔</span> Stock video keys for /broll-scout (optional)  <span class="dim">(PEXELS_API_KEY not set, PIXABAY_API_KEY not set; values not shown)</span>
+<span class="ok">✔</span> HyperFrames studio installed  <span class="dim">(found)</span>
+<span class="ok">✔</span> HyperFrames can render (Chrome, FFmpeg)  <span class="dim">(Node.js, FFmpeg, FFprobe, Chrome)</span>
+<span class="ok">✔</span> Skills installed  <span class="dim">(9 skills)</span>
+<span class="ok">✔</span> Your keys file (.env)  <span class="dim">(found (not shown))</span>
+
+<span class="ok">✔ Everything is ready.</span>
+
+================================================
+<span class="hi"> Done. Creator Kit is ready.</span>
+================================================
+Next:
+  1. Open Claude Code in this folder (type "claude" here, or use the desktop app).
+  2. Type /brand-intake and answer the questions. It makes the kit yours.
+  3. Then: npm run hf:render   (your first reel, in your colours; npm run hf:preview to watch it)
+     Your dashboard: npm run dashboard, then open http://localhost:5180</pre></div></body></html>
