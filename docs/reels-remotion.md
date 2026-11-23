@@ -27,8 +27,9 @@ All commands run from the `creator-kit` folder (the one with `brand/` in it). Yo
 | `npm run doc -- <month>` | an HTML checklist for the month: scripts, captions, posting steps |
 | `npm run new -- <slug>` | a new hand-built reel, copied from the starter |
 | `npm run reel -- <Id>` | renders a hand-built reel + spec check + review sheet |
-| `npm run pexels -- search "<words>"` | finds portrait stock clips (needs `PEXELS_API_KEY` in `.env`) |
-| `npm run library -- list` | your own clips in the asset library |
+| `npm run broll -- search "<words>"` | finds free B-roll on Wikimedia Commons (no key), Pexels and Pixabay (free keys in `.env`) and saves a preview sheet to pick from |
+| `npm run broll -- get <source:id>` | adds the clips you picked to the library, with source, author and licence |
+| `npm run library -- list` · `credits` | the clips in your asset library · the credit lines to paste into captions |
 | `npm run typecheck` · `npm run check:captions` | self-checks for contributors |
 
 `<month>` is a folder name in `reels/content/`, such as `example` or `2026-03`. Renders land in `reels/studio-remotion/out/<month>/<ID>-<slug>/`.
@@ -49,7 +50,7 @@ reels/
    ├─ src/footage/            footage engine: clips or brand stages, overlays, blocks, captions
    ├─ src/plan/               month plan → reels and 4:5 carousels
    ├─ src/reels/_starter/     the starter reel that `npm run new` copies
-   ├─ scripts/                produce, doc, pexels, library, vo, publora, reel, new
+   ├─ scripts/                produce, doc, broll, library, vo, publora, reel, new
    ├─ public/                 audio and clips you add (git-ignored)
    └─ out/                    your renders (git-ignored)
 ```
@@ -148,7 +149,7 @@ For sound effects, see [`reels/sounds/SOUND-LIBRARY.md`](../reels/sounds/SOUND-L
 ### A month, step by step
 
 1. Write the plan (or ask Claude Code to draft it from your brand file).
-2. Footage videos: `npm run pexels -- search "…"` then `npm run pexels -- get <id>` adds stock clips to the library (author and licence recorded in `reels/studio-remotion/assets/manifest.json`); `npm run library` adds your own.
+2. Footage videos: ask Claude Code for B-roll (`/broll-scout`), or run `npm run broll -- search "…"`, look at the sheet, then `npm run broll -- get <source:id>` for the ones you pick (source, author and licence recorded in `reels/studio-remotion/assets/manifest.json`); `npm run library` adds your own. Some Wikimedia clips need a credit line: `npm run library -- credits`.
 3. `npm run produce -- <month> --week N`: silent drafts (video, cover, review sheet, voice-over script, post text, carousel slides).
 4. Watch the drafts, record the voice-overs, add music.
 5. `npm run produce -- <month> --final <ID>`: `final.mp4`.

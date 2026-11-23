@@ -2,12 +2,13 @@
 // came from and whether we may use them. Files live in public/library/
 // (gitignored); their records live in assets/manifest.json (tracked).
 //
-//   npm run library -- scan <dir> [--limit 60]       contact sheet of a folder, adds nothing
+//   npm run library -- scan <dir> [--match beach] [--limit 60]   contact sheet of a folder (file names containing "beach"), adds nothing
 //   npm run library -- add <file>... --source own-ai|own-real [--name short-name] [--tags a,b] [--issues "..."]
 //   npm run library -- sheet [--source pexels] [--tag city]
 //   npm run library -- list
+//   npm run library -- credits [id...]               credit lines to paste into the caption
 //
-// Pexels clips are added by scripts/pexels.mjs.
+// Stock clips (Pexels, Pixabay, Wikimedia Commons) are added by scripts/broll.mjs.
 
 import { copyFileSync, mkdirSync, readdirSync, statSync } from "node:fs";
 import { basename, extname, join, relative } from "node:path";
@@ -64,9 +65,12 @@ function thumbs(file, key, meta) {
 
 const describe = (m) => (m.duration ? `${m.width}x${m.height} ${m.duration}s ${m.fps}fps` : `${m.width}x${m.height} still`);
 
-function scan(dir, limit) {
-  const files = walk(dir).slice(0, limit);
-  if (!files.length) die(`no media under ${dir}`);
+function scan(dir, limit, match) {
+  const words = (match ?? "").toLowerCase().split(/\s+/).filter(Boolean);
+  const files = walk(dir)
+    .filter((f) => words.every((w) => relative(dir, f).toLowerCase().includes(w)))
+    .slice(0, limit);
+  if (!files.length) die(`no media under ${dir}${words.length ? ` with "${match}" in the name` : ""}`);
   const rows = files.map((file, i) => {
     process.stdout.write(`\r  ${i + 1}/${files.length}`);
     const name = relative(dir, file).slice(-60);
@@ -127,10 +131,22 @@ function sheet(opt) {
   contactSheet(rows, join(SHEETS, `library-${opt.source ?? "all"}${opt.tag ? `-${opt.tag}` : ""}.jpg`));
 }
 
+// Credit lines for stock assets: required ones first (CC BY / BY-SA), then courtesy credits.
+function credits(ids) {
+  const stock = readManifest().assets.filter((a) => a.credit && (!ids.length || ids.includes(a.id)));
+  if (!stock.length) die("no stock assets with a credit line (own footage needs none)");
+  const need = stock.filter((a) => a.attributionRequired);
+  const nice = stock.filter((a) => !a.attributionRequired);
+  const list = (as) => as.map((a) => `• ${a.credit}`).join("\n");
+  if (need.length) console.log(`Credit REQUIRED (put these in the caption or description):\n${list(need)}\n`);
+  if (nice.length) console.log(`Credit not required, but appreciated:\n${list(nice)}`);
+}
+
 const [cmd, ...rest] = process.argv.slice(2);
 const { pos, opt } = parseArgs(rest);
-if (cmd === "scan" && pos[0]) scan(pos[0], Number(opt.limit ?? 60));
+if (cmd === "scan" && pos[0]) scan(pos[0], Number(opt.limit ?? 60), opt.match);
 else if (cmd === "add" && pos.length) add(pos, opt);
 else if (cmd === "sheet") sheet(opt);
+else if (cmd === "credits") credits(pos);
 else if (cmd === "list") for (const a of readManifest().assets) console.log(`${a.id}\t${describe(a)}\t${a.tags.join(",")}`);
-else die("usage: npm run library -- scan <dir> | add <file>... --source own-ai|own-real | sheet | list");
+else die("usage: npm run library -- scan <dir> [--match words] | add <file>... --source own-ai|own-real | sheet | list | credits [id...]");

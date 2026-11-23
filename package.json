@@ -12,6 +12,7 @@
     "reels/studio-remotion"
   ],
   "scripts": {
+    "doctor": "node setup/doctor.mjs",
     "brand:check": "node scripts/brand-check.mjs",
     "start": "npm run start -w reels/studio-remotion",
     "starter": "npm run reel -w reels/studio-remotion -- Starter",
@@ -20,12 +21,15 @@
     "produce": "npm run produce -w reels/studio-remotion --",
     "doc": "npm run doc -w reels/studio-remotion --",
     "pexels": "npm run pexels -w reels/studio-remotion --",
+    "broll": "npm run broll -w reels/studio-remotion --",
     "library": "npm run library -w reels/studio-remotion --",
     "vo": "npm run vo -w reels/studio-remotion --",
     "publora": "npm run publora -w reels/studio-remotion --",
     "fonts": "npm run fonts -w reels/studio-remotion",
     "typecheck": "npm run typecheck -w reels/studio-remotion",
-    "check:captions": "npm run check:captions -w reels/studio-remotion"
+    "check:captions": "npm run check:captions -w reels/studio-remotion",
+    "check:stock": "npm run check:stock -w reels/studio-remotion",
+    "smoke": "npm run smoke -w reels/studio-remotion"
   },
   "dependencies": {
     "ajv": "^8.20.0",

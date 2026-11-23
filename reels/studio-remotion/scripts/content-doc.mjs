@@ -45,7 +45,7 @@ function beatRows(v) {
       const visual = b.shot
         ? b.shot.asset
           ? `your clip: <code>${esc(b.shot.asset)}</code>`
-          : `Pexels: "${esc(b.shot.pexels)}"`
+          : `B-roll search: "${esc(b.shot.pexels)}"`
         : !b.block || b.block.type === "none"
           ? "graphic: text only"
           : `graphic: ${esc(b.block.type)}${b.block.verdict ? ` (${esc(b.block.verdict)})` : ""}${b.block.items ? ` — ${esc(b.block.items.join(" · "))}` : ""}`;
@@ -97,7 +97,7 @@ function videoCard(v, n) {
     <h4>🎤 Voice-over script</h4>
     <div class="block"><b>Voice:</b> ${esc(plan.defaults.voice)}. Don't delete the <code>&lt;break&gt;</code> tags: the audio is cut automatically at those pauses.</div>
     ${copy(voScript(v))}
-    ${pexels.length ? `<h4>🔎 Pexels searches (Claude picks the clips)</h4><div class="block">${pexels.map((q) => `"${esc(q)}"`).join(" · ")}</div>` : ""}
+    ${pexels.length ? `<h4>🔎 B-roll searches (npm run broll, you pick from the sheet)</h4><div class="block">${pexels.map((q) => `"${esc(q)}"`).join(" · ")}</div>` : ""}
     <h4>📱 TikTok caption</h4>
     ${copy(`${v.caption}\n\n${[...v.hashtags, ...plan.defaults.baseTags].join(" ")}`)}
     <h4>📌 First comment</h4>

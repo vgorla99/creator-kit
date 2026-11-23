@@ -1,0 +1,108 @@
+<!doctype html>
+<!-- Scene 2, the tip: series name, what you do, your three content pillars. Words: brand.yaml content.series, brand.niche, content.pillars. -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        #root {
+          position: absolute;
+          inset: 0;
+          background: var(--light);
+          color: var(--dark);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          padding: var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left);
+          overflow: hidden;
+        }
+        #tip-kicker {
+          font-family: var(--font-mono);
+          font-weight: 500;
+          font-size: 32px;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: var(--tertiary);
+        }
+        #tip-title {
+          margin-top: 36px;
+          font-family: var(--font-display);
+          font-weight: 700;
+          font-size: 76px;
+          line-height: 1.02;
+          letter-spacing: -0.03em;
+          max-width: 100%;
+        }
+        #tip-list {
+          margin-top: 56px;
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+        .tip-row {
+          position: relative;
+          display: flex;
+          align-items: center;
+          gap: 24px;
+          padding: 18px 24px;
+          overflow: hidden;
+        }
+        .tip-bar {
+          position: absolute;
+          inset: 0;
+          background: var(--secondary);
+          opacity: 0.22;
+          transform-origin: left center;
+        }
+        .tip-num {
+          position: relative;
+          font-family: var(--font-display);
+          font-weight: 700;
+          font-size: 52px;
+          color: var(--tertiary);
+          min-width: 40px;
+        }
+        .tip-text {
+          position: relative;
+          font-family: var(--font-body);
+          font-weight: 600;
+          font-size: 36px;
+          line-height: 1.15;
+        }
+      </style>
+
+      <div id="root" data-composition-id="tip" data-width="1080" data-height="1920">
+        <div id="tip-kicker">Series</div>
+        <div id="tip-title">What this account is about</div>
+        <div id="tip-list"></div>
+      </div>
+
+      <script>
+        const b = window.BRAND;
+        document.getElementById("tip-kicker").textContent = b.series || b.name;
+        document.getElementById("tip-title").textContent = b.niche || b.name;
+        const list = document.getElementById("tip-list");
+        b.pillars.forEach((pillar, i) => {
+          const row = document.createElement("div");
+          row.className = "tip-row";
+          row.id = `tip-row-${i}`;
+          row.innerHTML = `<div class="tip-bar"></div><div class="tip-num">${i + 1}</div><div class="tip-text"></div>`;
+          row.querySelector(".tip-text").textContent = pillar;
+          list.appendChild(row);
+        });
+
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#tip-kicker", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0.35);
+        tl.fromTo("#tip-title", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.6, ease: "power4.out" }, 0.45);
+        b.pillars.forEach((_, i) => {
+          const at = 1.0 + i * 0.35;
+          tl.fromTo(`#tip-row-${i} .tip-bar`, { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: "power3.inOut" }, at);
+          tl.fromTo(`#tip-row-${i} .tip-num, #tip-row-${i} .tip-text`, { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, at + 0.15);
+        });
+        window.__timelines["tip"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

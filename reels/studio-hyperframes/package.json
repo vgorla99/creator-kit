@@ -1,0 +1,25 @@
+{
+  "name": "@creator-kit/studio-hyperframes",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Creator Kit reel studio (HyperFrames): an HTML starter reel that reads ../../brand/brand.yaml.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "brand": "node scripts/brand.mjs",
+    "preview": "npm run brand && hyperframes preview",
+    "check": "npm run brand && hyperframes check",
+    "snapshot": "npm run brand && hyperframes snapshot --at 1.5,5,8.8",
+    "render": "npm run brand && hyperframes render --quality looks --output out/starter.mp4"
+  },
+  "dependencies": {
+    "ajv": "^8.20.0",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "hyperframes": "0.9.84"
+  }
+}

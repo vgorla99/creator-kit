@@ -1,0 +1,67 @@
+<!doctype html>
+<!-- Scene 3, the end card: one line, a button, your handle. Words: brand.yaml visual.end_card + brand.handle. -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        #root {
+          position: absolute;
+          inset: 0;
+          background: var(--tertiary);
+          color: var(--light);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: flex-start;
+          padding: var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left);
+          overflow: hidden;
+        }
+        #end-line {
+          font-family: var(--font-display);
+          font-weight: 700;
+          font-size: 92px;
+          line-height: 1;
+          letter-spacing: -0.03em;
+          max-width: 100%;
+        }
+        #end-button {
+          margin-top: 80px;
+          padding: 30px 56px;
+          border-radius: 999px;
+          background: var(--primary);
+          color: var(--dark);
+          font-family: var(--font-body);
+          font-weight: 600;
+          font-size: 42px;
+        }
+        #end-handle {
+          margin-top: 48px;
+          font-family: var(--font-mono);
+          font-size: 44px;
+        }
+      </style>
+
+      <div id="root" data-composition-id="end" data-width="1080" data-height="1920">
+        <div id="end-line">Your end card line</div>
+        <div id="end-button">Follow for more</div>
+        <div id="end-handle">@handle</div>
+      </div>
+
+      <script>
+        const b = window.BRAND;
+        document.getElementById("end-line").textContent = b.endCard.line;
+        document.getElementById("end-button").textContent = b.endCard.button;
+        document.getElementById("end-handle").textContent = b.handle;
+
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#end-line", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.6, ease: "power4.out" }, 0.25);
+        tl.fromTo("#end-button", { scale: 0.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(2)", transformOrigin: "left center" }, 0.5);
+        tl.fromTo("#end-handle", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out" }, 0.7);
+        window.__timelines["end"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
