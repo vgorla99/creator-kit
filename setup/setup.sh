@@ -37,6 +37,9 @@ done
 case "$PARTS" in ""|reels|sites|both) ;; *) echo "--parts must be reels, sites or both"; exit 1 ;; esac
 case "$ENGINE" in ""|remotion|hyperframes) ;; *) echo "--engine must be remotion or hyperframes"; exit 1 ;; esac
 
+# HyperFrames sends anonymous usage data unless this is set; the kit keeps it off.
+export HYPERFRAMES_NO_TELEMETRY="${HYPERFRAMES_NO_TELEMETRY:-1}"
+
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO"
 
@@ -85,7 +88,7 @@ version_at_least() {
 
 tool_ok() {
   case "$1" in
-    node) has node && version_at_least "$(node --version 2>/dev/null)" 22 0 ;;
+    node) has node && version_at_least "$(node --version 2>/dev/null)" 22 18 ;;
     python) has python3 && version_at_least "$(python3 --version 2>/dev/null)" 3 12 ;;
     uv) has uv ;;
     ffmpeg) has ffmpeg ;;
@@ -175,7 +178,13 @@ else
   log "  Programs: Node.js, Python, uv, ffmpeg, Git and GitHub CLI are already installed."
 fi
 log "  Install the kit's packages (npm ci):"
-if [ "$WANT_REELS" -eq 1 ]; then log "    - reel studio (Remotion, about 400 MB)"; else log "    - brand checker"; fi
+if [ "$WANT_REELS" -eq 1 ]; then
+  log "    - reel studio (Remotion, about 400 MB)"
+  [ "$ENGINE" = "hyperframes" ] && log "    - HyperFrames studio (reels/studio-hyperframes, about 60 MB)"
+  log "    - dashboard (reels/dashboard: review, calendar, numbers)"
+else
+  log "    - brand checker"
+fi
 if [ "$WANT_SITES" -eq 1 ]; then log "    - website template (sites/template)"; fi
 ENGINE_NOTE=""
 [ "$WANT_REELS" -eq 1 ] && ENGINE_NOTE=" ($ENGINE)"
@@ -227,6 +236,10 @@ fi
 NPM_FIX="Check your internet connection and run the setup again."
 if [ "$WANT_REELS" -eq 1 ]; then
   step "Installing the reel studio packages" "$NPM_FIX" npm ci --no-audit --no-fund
+  step "Installing the dashboard packages" "$NPM_FIX" npm --prefix reels/dashboard ci --no-audit --no-fund
+  if [ "$ENGINE" = "hyperframes" ]; then
+    step "Installing the HyperFrames studio packages" "$NPM_FIX" npm --prefix reels/studio-hyperframes ci --no-audit --no-fund
+  fi
 else
   # Sites only: the root packages without the reel studio.
   step "Installing the brand checker" "$NPM_FIX" npm ci --workspaces=false --no-audit --no-fund
@@ -245,6 +258,15 @@ for dir in . sites/template; do
     log "Created $shown (empty keys; add yours later, every key is optional)."
   fi
 done
+if [ "$WANT_REELS" -eq 1 ]; then
+  log ""
+  log "Optional keys in .env (open it in TextEdit; paste a key after the = sign, nothing else):"
+  log "  PEXELS_API_KEY   free stock video for /broll-scout: https://www.pexels.com/api/"
+  log "  PIXABAY_API_KEY  more free stock video for /broll-scout: https://pixabay.com/api/docs/"
+  log "                   (Wikimedia Commons needs no key; your own footage needs none)"
+  log "  POSTIZ_API_KEY   lets the dashboard show your Postiz queue and numbers"
+  log "  Check which keys are set at any time: npm run doctor (it never shows the keys)."
+fi
 
 # ---------------------------------------------------------------- skills
 
@@ -260,6 +282,16 @@ step "Installing skills" "Check your internet connection and run the setup again
 
 # ---------------------------------------------------------------- checks
 
+# The test picture comes first: it downloads the browser that renders, which the health check looks for.
+SMOKE_FIX="The first render downloads a small browser; check your internet connection and run the setup again."
+if [ "$WANT_REELS" -eq 1 ] && [ "$ENGINE" = "hyperframes" ]; then
+  step "Test picture (one frame of the HyperFrames starter reel)" "$SMOKE_FIX" npm run hf:smoke
+  log "   Saved: reels/studio-hyperframes/out/smoke/"
+elif [ "$WANT_REELS" -eq 1 ]; then
+  step "Test picture (renders one frame of the starter reel)" "$SMOKE_FIX" npm run smoke
+  log "   Saved: reels/studio-remotion/out/smoke.png"
+fi
+
 log ""
 log ">> Health check"
 HEALTHY=1
@@ -268,13 +300,6 @@ node setup/doctor.mjs 2>&1 | tee -a "$LOG"
 [ "${PIPESTATUS[0]}" -eq 0 ] || HEALTHY=0
 set -e
 
-if [ "$WANT_REELS" -eq 1 ]; then
-  step "Test picture (renders one frame of the starter reel)" "The first render downloads a small browser; check your internet connection and run the setup again." npm run smoke
-  log "   Saved: reels/studio-remotion/out/smoke.png"
-  if [ "$ENGINE" = "hyperframes" ]; then
-    log "   Note: the HyperFrames starter is coming in a later version. Until then your reels use the Remotion studio with your brand."
-  fi
-fi
 if [ "$WANT_SITES" -eq 1 ]; then
   step "Test build of the website" "Check your internet connection (the first build downloads your fonts) and run the setup again." npm --prefix sites/template run build
   step "Website SEO check" "Open Claude Code and ask it to fix the failed checks listed above." npm --prefix sites/template run check-seo
@@ -292,7 +317,12 @@ log "================================================"
 log "Next:"
 log "  1. Open Claude Code in this folder (type \"claude\" here, or use the desktop app)."
 log "  2. Type /brand-intake and answer the questions. It makes the kit yours."
-[ "$WANT_REELS" -eq 1 ] && log "  3. Then: npm run starter   (your first reel, in your colours)"
+if [ "$WANT_REELS" -eq 1 ] && [ "$ENGINE" = "hyperframes" ]; then
+  log "  3. Then: npm run hf:render   (your first reel, in your colours; npm run hf:preview to watch it)"
+elif [ "$WANT_REELS" -eq 1 ]; then
+  log "  3. Then: npm run starter   (your first reel, in your colours)"
+fi
+[ "$WANT_REELS" -eq 1 ] && log "     Your dashboard: npm run dashboard, then open http://localhost:5180"
 [ "$WANT_SITES" -eq 1 ] && log "  3. Then: ask Claude to run /site-builder   (your website)"
 log ""
 log "Log saved to $LOG"

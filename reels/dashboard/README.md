@@ -12,13 +12,13 @@ A local web page to plan, review and track your reels. It runs on your own compu
 
 ## Start it
 
-Needs Node.js 22.18 or newer. From the kit folder:
+Needs Node.js 22.18 or newer (the setup installs it). From the kit folder:
 
 ```bash
-cd reels/dashboard
-npm install        # first time only
-npm start          # builds the page, then serves it
+npm run dashboard
 ```
+
+It installs its packages the first time, builds the page, then serves it. (Inside `reels/dashboard/`, `npm start` does the same.)
 
 Open **http://localhost:5180**. Stop it with **Ctrl+C**.
 

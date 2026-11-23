@@ -13,7 +13,8 @@
     "preview": "npm run brand && hyperframes preview",
     "check": "npm run brand && hyperframes check",
     "snapshot": "npm run brand && hyperframes snapshot --at 1.5,5,8.8",
-    "render": "npm run brand && hyperframes render --quality looks --output out/starter.mp4"
+    "render": "npm run brand && hyperframes render --quality looks --output out/starter.mp4",
+    "smoke": "npm run brand && hyperframes snapshot --at 1.5 --no-end --output out/smoke"
   },
   "dependencies": {
     "ajv": "^8.20.0",
