@@ -41,17 +41,24 @@ function Stop-Setup([string]$Text) {
 
 # Runs a program, shows and logs its output, and stops with a plain-English
 # message if it fails. (Never used with secrets: nothing here reads .env.)
-function Invoke-Step([string]$Label, [string]$Exe, [string[]]$Arguments, [string]$Fix, [switch]$AllowFail) {
+# -Live: run straight in the console (for steps that ask questions; PowerShell
+# pipes whole lines only, so a question would stay hidden). Output is not logged.
+function Invoke-Step([string]$Label, [string]$Exe, [string[]]$Arguments, [string]$Fix, [switch]$AllowFail, [switch]$Live) {
     Write-Log ''
     Write-Log ('>> ' + $Label)
     $previous = $ErrorActionPreference
     $ErrorActionPreference = 'Continue'
-    & $Exe @Arguments 2>&1 | ForEach-Object {
-        $line = "$_"
-        Write-Host $line
-        Add-Content -Path $Log -Value $line -Encoding UTF8
+    if ($Live) {
+        & $Exe @Arguments
+    } else {
+        & $Exe @Arguments 2>&1 | ForEach-Object {
+            $line = "$_"
+            Write-Host $line
+            Add-Content -Path $Log -Value $line -Encoding UTF8
+        }
     }
     $code = $LASTEXITCODE
+    Add-Content -Path $Log -Value ('   exit code ' + $code) -Encoding UTF8
     $ErrorActionPreference = $previous
     if ($code -ne 0 -and -not $AllowFail) { Stop-Setup ($Label + ' did not work (exit code ' + $code + '). ' + $Fix) }
     return ($code -eq 0)
@@ -204,7 +211,7 @@ foreach ($dir in @('.', 'sites\template')) {
     $target = Join-Path $Repo ($dir + '\.env')
     if ((Test-Path $example) -and -not (Test-Path $target)) {
         Copy-Item $example $target
-        Write-Log ('Created ' + (Resolve-Path -Relative $target) + ' (empty keys; add yours later, every key is optional).')
+        Write-Log ('Created ' + $(if ($dir -eq '.') { '.env' } else { $dir + '\.env' }) + ' (empty keys; add yours later, every key is optional).')
     }
 }
 
@@ -216,7 +223,7 @@ Set-Content -Path (Join-Path $Repo 'setup\.choices.json') -Value $choices -Encod
 $skillArgs = @('setup\skills.mjs', '--parts', ($PartList -join ','), '--engine', $Engine)
 if ($Yes) { $skillArgs += '--yes' }
 if ($Optional) { $skillArgs += @('--optional', $Optional) }
-[void](Invoke-Step 'Installing skills' 'node' $skillArgs 'Check your internet connection and run the setup again.')
+[void](Invoke-Step 'Installing skills' 'node' $skillArgs 'Check your internet connection and run the setup again.' -Live:(-not $Yes))
 
 # ---------------------------------------------------------------- checks
 

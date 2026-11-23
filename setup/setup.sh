@@ -241,7 +241,8 @@ for dir in . sites/template; do
   if [ "$dir" != "." ] && [ "$WANT_SITES" -ne 1 ]; then continue; fi
   if [ -f "$dir/.env.example" ] && [ ! -f "$dir/.env" ]; then
     cp "$dir/.env.example" "$dir/.env"
-    log "Created $dir/.env (empty keys; add yours later, every key is optional)."
+    if [ "$dir" = "." ]; then shown=".env"; else shown="$dir/.env"; fi
+    log "Created $shown (empty keys; add yours later, every key is optional)."
   fi
 done
 
