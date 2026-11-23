@@ -1,0 +1,7 @@
+# Generated from brand/brand.yaml by scripts/brand.mjs
+film/brand.css
+film/brand.js
+film/fonts/
+# Renders and snapshots
+out/
+.hyperframes/
