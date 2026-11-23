@@ -1,0 +1,36 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="base.css"><style>
+body { width: 1280px; height: 540px; overflow: hidden; background: var(--ink); color: var(--paper); position: relative; }
+.col { position: absolute; top: 40px; width: 560px; text-align: center; }
+.label { font-family: "JB"; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.title { font-size: 30px; font-weight: 700; letter-spacing: -0.02em; margin-top: 4px; }
+.meta { font-family: "JB"; font-size: 13.5px; color: var(--muted); margin-top: 8px; }
+.row { display: flex; justify-content: center; gap: 18px; margin-top: 26px; }
+.p { width: 156px; border-radius: 24px; padding: 7px; background: #1E1E26; box-shadow: 0 0 0 1px #34343E inset, 0 30px 60px -24px rgba(0,0,0,.7); }
+.p img { display: block; width: 100%; border-radius: 18px; }
+.div { position: absolute; left: 639px; top: 60px; bottom: 60px; width: 1px; background: var(--line); }
+.cmd { font-family: "JB"; font-size: 14px; color: #D9D6DC; margin-top: 22px; }
+.cmd b { color: var(--coral); }
+</style></head><body>
+<div class="col" style="left:60px">
+  <div class="label">engine 1 · react</div><div class="title">Remotion</div>
+  <div class="meta">monthly plans · footage · captions · carousels</div>
+  <div class="row">
+    <div class="p"><img src="../../../reels/studio-remotion/out/readme/Starter-75.png"></div>
+    <div class="p"><img src="../../../reels/studio-remotion/out/readme/2601-V01-150.png"></div>
+    <div class="p"><img src="../../../reels/studio-remotion/out/readme/Starter-300.png"></div>
+  </div>
+  <div class="cmd"><b>$</b> npm run starter</div>
+</div>
+<div class="div"></div>
+<div class="col" style="left:660px">
+  <div class="label">engine 2 · html + gsap</div><div class="title">HyperFrames</div>
+  <div class="meta">one-off motion pieces · kinetic type · promos</div>
+  <div class="row">
+    <div class="p"><img src="../../../reels/studio-remotion/out/readme/HF-00-at-1.5s.png"></div>
+    <div class="p"><img src="../../../reels/studio-remotion/out/readme/HF-01-at-5s.png"></div>
+    <div class="p"><img src="../../../reels/studio-remotion/out/readme/HF-02-at-8.8s.png"></div>
+  </div>
+  <div class="cmd"><b>$</b> npm run hf:render</div>
+</div>
+<div class="grain"></div>
+</body></html>
