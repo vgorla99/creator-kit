@@ -41,3 +41,7 @@ reels/content/**/*.webp
 # Sites: research notes and Search Console exports stay local.
 sites/research/*
 !sites/research/README.md
+
+# Style rounds: previews, ratings and submissions stay local.
+reels/style/*
+!reels/style/README.md
