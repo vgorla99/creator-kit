@@ -1,0 +1,79 @@
+<!doctype html>
+<!-- Scene 1, the hook: your wordmark lands, then your handle. Words: brand.yaml visual.wordmark + brand.handle. -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        #root {
+          position: absolute;
+          inset: 0;
+          background: var(--dark);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          padding: var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left);
+          overflow: hidden;
+        }
+        #hook-mark {
+          font-family: var(--font-display);
+          font-weight: 700;
+          font-size: 200px;
+          line-height: 0.88;
+          letter-spacing: -0.04em;
+        }
+        #hook-prefix,
+        #hook-suffix {
+          display: block;
+        }
+        #hook-prefix {
+          color: var(--light);
+        }
+        #hook-suffix {
+          color: var(--primary);
+        }
+        #hook-dot {
+          width: 64px;
+          height: 64px;
+          border-radius: 50%;
+          background: var(--primary);
+          margin-bottom: 56px;
+        }
+        #hook-handle {
+          margin-top: 64px;
+          font-family: var(--font-mono);
+          font-size: 48px;
+          color: var(--light);
+          opacity: 0.8;
+        }
+      </style>
+
+      <div id="root" data-composition-id="hook" data-width="1080" data-height="1920">
+        <div id="hook-dot"></div>
+        <div id="hook-mark">
+          <span id="hook-prefix">BRAND</span>
+          <span id="hook-suffix">NAME</span>
+        </div>
+        <div id="hook-handle">@handle</div>
+      </div>
+
+      <script>
+        const b = window.BRAND;
+        document.getElementById("hook-prefix").textContent = b.wordmark.prefix;
+        document.getElementById("hook-suffix").textContent = b.wordmark.suffix;
+        document.getElementById("hook-handle").textContent = b.handle;
+
+        const tl = gsap.timeline({ paused: true });
+        // Frame 0 is the thumbnail, so the wordmark is already there; the dot and handle arrive.
+        tl.fromTo("#hook-dot", { scale: 0 }, { scale: 1, duration: 0.45, ease: "back.out(2.2)" }, 0.15);
+        tl.fromTo("#hook-suffix", { yPercent: 0 }, { yPercent: -8, duration: 0.3, ease: "power2.out", yoyo: true, repeat: 1 }, 0.35);
+        tl.fromTo("#hook-handle", { opacity: 0, x: -24 }, { opacity: 0.8, x: 0, duration: 0.5, ease: "power2.out" }, 0.6);
+        // Slow push-in for the rest of the shot.
+        tl.fromTo("#hook-mark", { scale: 1 }, { scale: 1.06, duration: 3.3, ease: "none", transformOrigin: "left center" }, 0);
+        window.__timelines["hook"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
