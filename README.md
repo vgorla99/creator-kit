@@ -76,6 +76,10 @@ Then copy this line, paste it and press Enter:
 
 The setup asks what you want to make (reels, websites or both) and, for reels, which video engine. Then it lists everything it will install and **waits for your yes**. It installs only what is missing (Node.js, Python, uv, ffmpeg, Git, GitHub CLI), the kit's packages and its Claude Code skills, then checks everything and renders a test picture. Windows may ask for permission once or twice; click **Yes**.
 
+<p align="center">
+  <img src="assets/readme/setup-done.png" alt="The end of the setup on Windows: every health check passes, then Done. Creator Kit is ready. and the next steps" width="90%">
+</p>
+
 It ends with **Done. Creator Kit is ready.** or tells you, in plain English, what to fix. You can run it again any time; it picks up where it left off. To re-check later: `npm run doctor`.
 
 ### 3. Make it yours: `/brand-intake`
