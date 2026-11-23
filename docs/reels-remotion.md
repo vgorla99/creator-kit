@@ -136,7 +136,7 @@ The example plan also shows `caption`, `hashtags`, `firstComment`, `igCaption` a
 
 Captions are made from the voice-over: each line is cut into 1–3 word chunks and the spoken word pops in your primary colour. The headline counts as a caption, so a sentence it already says is skipped ("Eight steps" is skipped under an "8 STEPS" headline). A beat's `caption` overrides the automatic text (`""` = none).
 
-Number words are matched in your `brand.language`: English and German tables ship with the kit, English is the default. To add a language, add a table to `NUMBERS` in `src/footage/Captions.tsx`, a line in `langOf()`, and a few cases to `scripts/check-captions.mjs`.
+Number words are matched in your `brand.language`: English and German tables ship with the kit, English is the default. To add a language, add a table to `NUMBERS` in `reels/studio-remotion/src/footage/Captions.tsx`, a line in `langOf()`, and a few cases to `reels/studio-remotion/scripts/check-captions.mjs`.
 
 ### Audio
 

@@ -406,7 +406,7 @@ If you still want it, here are the steps:
 ### 12.5 Schedule your first post
 
 1. In Postiz, click **Create Post** (or click an empty slot on the calendar).
-2. Tick the channels at the top, write the caption, and drag in your video from `out/`.
+2. Tick the channels at the top, write the caption, and drag in your video from `reels/content/00_Ready/<reel>/`.
 3. Fill in the per-channel settings on the right. YouTube needs a **title**.
 4. Pick a date and time and add it to the calendar.
 
