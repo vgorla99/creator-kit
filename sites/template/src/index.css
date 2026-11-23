@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+/* Brand values arrive as CSS variables (see vite/brand.ts). These names make
+   them Tailwind classes: bg-dark, text-light, bg-primary, font-display... */
+@theme inline {
+  --color-dark: var(--brand-dark);
+  --color-light: var(--brand-light);
+  --color-primary: var(--brand-primary);
+  --color-secondary: var(--brand-secondary);
+  --color-tertiary: var(--brand-tertiary);
+  --font-display: var(--brand-font-display);
+  --font-body: var(--brand-font-body);
+  --font-mono: var(--brand-font-mono);
+}
+
+@layer base {
+  html {
+    font-family: var(--font-body);
+    background: var(--color-light);
+    color: var(--color-dark);
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+    line-height: 1.1;
+  }
+  p { text-wrap: pretty; }
+  :focus-visible {
+    outline: 3px solid var(--color-tertiary);
+    outline-offset: 3px;
+  }
+  ::selection { background: var(--color-primary); color: var(--color-dark); }
+}
+
+/* Motion. Everything below runs only when the visitor has not asked their
+   system for reduced motion. Without JavaScript, nothing is hidden. */
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+  [data-reveal] { transition: opacity 600ms cubic-bezier(0.22, 1, 0.36, 1), transform 600ms cubic-bezier(0.22, 1, 0.36, 1); }
+  [data-reveal="waiting"] { opacity: 0; transform: translateY(24px); }
+  .float-slow { animation: float 7s ease-in-out infinite; }
+  .float-slower { animation: float 9s ease-in-out -3s infinite; }
+  .rise { animation: rise 900ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .press { transition: transform 160ms ease; }
+  .press:active { transform: scale(0.97); }
+  dialog[open] { animation: rise 400ms cubic-bezier(0.22, 1, 0.36, 1); }
+}
+@keyframes float { 50% { transform: translateY(-14px) rotate(2deg); } }
+@keyframes rise { from { transform: translateY(32px) scale(0.96); } }

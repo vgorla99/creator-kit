@@ -20,3 +20,7 @@ public/library/
 # NOTE: src/kit/fonts.generated.ts is intentionally tracked. Regenerating it needs
 # the @fontsource packages installed, which render-only environments may not
 # have. See README "Fonts".
+
+# Sites: research notes and Search Console exports stay local.
+sites/research/*
+!sites/research/README.md
