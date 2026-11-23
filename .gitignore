@@ -41,3 +41,20 @@ reels/content/**/*.webp
 # Sites: research notes and Search Console exports stay local.
 sites/research/*
 !sites/research/README.md
+
+# Setup: third-party skills are installed from their own repos (setup/skills.lock.yaml),
+# never committed. Only Creator Kit's own skills are tracked.
+.claude/skills/*
+!.claude/skills/brand-intake/
+!.claude/skills/niche-research/
+!.claude/skills/site-builder/
+!.claude/skills/motion-brief/
+!.claude/skills/motion-vocabulary/
+!.claude/skills/reel-pipeline/
+!.claude/skills/post-video/
+!.claude/skills/content-calendar-from-analytics/
+.claude/settings.local.json
+.claude/worktrees/
+setup/.cache/
+setup/logs/
+setup/.choices.json

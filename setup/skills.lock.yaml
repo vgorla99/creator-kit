@@ -1,0 +1,227 @@
+# Third-party skills and plugins that setup installs from their own repositories.
+#
+# Nothing listed here is committed to Creator Kit. `setup/skills.mjs` checks out
+# each `repo` at its pinned `commit`, copies `path` into `.claude/skills/<name>/`
+# (git-ignored) and applies the `patch` from setup/patches/ if there is one.
+#
+# Fields
+#   repo      the skill's own GitHub repository
+#   path      folder inside that repo that holds SKILL.md ("." = the whole repo)
+#   commit    exact commit to install (updating = change this line, run setup again)
+#   licence   checked on the pinned commit (LICENSE file or the repo's README)
+#   required  true = always installed for its part; false = setup asks first
+#   for       reels | sites | all   (which part of the kit needs it)
+#   engine    any | remotion | hyperframes   (reels only: which video engine)
+#   patch     optional, a file in setup/patches/
+#
+# Verified 2026-11-23. Left out on purpose (see CREDITS.md):
+#   story-audit (Ootto-AI/claude-story-audit: no licence), remotion-captions
+#   (remotion-dev/skills: no licence), get-brolls (needs its author's licence),
+#   embedded-captions / music-to-video / talking-head-recut (removed upstream;
+#   captions now live in the hyperframes skill's references/captions.md).
+
+skills:
+  # Core: writing reels that get watched
+  - name: virality
+    repo: https://github.com/Ootto-AI/claude-content-skills
+    path: skills/virality
+    commit: 691875ac3eafaf84ec0bdb0283728c85d2cb3413
+    licence: MIT
+    required: true
+    for: reels
+    engine: any
+    patch: virality-no-ads.patch
+    why: hooks and scripts that make something happen in the first 3 seconds
+
+  - name: ab-hook-tester
+    repo: https://github.com/Ootto-AI/claude-content-skills
+    path: skills/ab-hook-tester
+    commit: 691875ac3eafaf84ec0bdb0283728c85d2cb3413
+    licence: MIT
+    required: true
+    for: reels
+    engine: any
+    why: two different hooks per reel for trial reels (A/B)
+
+  - name: humanizer
+    repo: https://github.com/blader/humanizer
+    path: .
+    commit: a32f24407364c74c812b43c15926d638bee1e072
+    licence: MIT
+    required: true
+    for: all
+    engine: any
+    why: takes the AI sound out of captions, scripts and site copy
+
+  - name: watch
+    repo: https://github.com/bradautomates/claude-video
+    path: skills/watch
+    commit: 03ceb42f7fa2c4439aca01752118044baabffb8f
+    licence: MIT
+    required: true
+    for: reels
+    engine: any
+    why: lets Claude watch a reference video (frames + transcript)
+
+  # Engine: Remotion
+  - name: video-shotcraft
+    repo: https://github.com/Vincentwei1021/video-shotcraft
+    path: .
+    commit: 59f3e9b9e936ff2bce0e18446226d770a3f2f61f
+    licence: Apache-2.0
+    required: true
+    for: reels
+    engine: remotion
+    why: Remotion product promos, shot cards and sound-effect search
+
+  - name: remotion-best-practices
+    repo: https://github.com/vercel-labs/json-render
+    path: skills/remotion-best-practices
+    commit: c926907855d95dde328264350ac5464b60be201d
+    licence: Apache-2.0
+    required: true
+    for: reels
+    engine: remotion
+    why: Remotion rules (timing, sequences, assets, rendering)
+
+  # Engine: HyperFrames
+  - name: motionmaxxing
+    repo: https://github.com/Tejashmakwana/motionmaxxing
+    path: .
+    commit: 8c8ec0f2a6f6c9a0da15cd24f7b1298ab298368c
+    licence: Apache-2.0
+    required: true
+    for: reels
+    engine: hyperframes
+    why: directs and builds HyperFrames motion films with measured curves and review gates
+
+  - name: hyperframes
+    repo: https://github.com/heygen-com/hyperframes
+    path: skills/hyperframes
+    commit: 8c31cb3f400b20710ff76fda53354d7abfd6faca
+    licence: Apache-2.0
+    required: true
+    for: reels
+    engine: hyperframes
+    why: the HyperFrames video engine (HTML + GSAP), including captions
+
+  - name: hyperframes-cli
+    repo: https://github.com/heygen-com/hyperframes
+    path: skills/hyperframes-cli
+    commit: 8c31cb3f400b20710ff76fda53354d7abfd6faca
+    licence: Apache-2.0
+    required: true
+    for: reels
+    engine: hyperframes
+    why: preview and render commands for HyperFrames
+
+  - name: hyperframes-registry
+    repo: https://github.com/heygen-com/hyperframes
+    path: skills/hyperframes-registry
+    commit: 8c31cb3f400b20710ff76fda53354d7abfd6faca
+    licence: Apache-2.0
+    required: true
+    for: reels
+    engine: hyperframes
+    why: ready-made HyperFrames blocks
+
+  # Optional (setup asks)
+  - name: anatomy
+    repo: https://github.com/wheresryan22/anatomy
+    path: .
+    commit: 1482e8469b0a9e0d8cc18ea2740a01423d29ae80
+    licence: MIT
+    required: false
+    for: reels
+    engine: any
+    why: isometric figures that explain how something works (about 28 MB)
+
+  - name: review-responder
+    repo: https://github.com/Ootto-AI/claude-support-skills
+    path: skills/review-responder
+    commit: 0b45fdcd8674d10a0c4ee74ababc9f17de0a1325
+    licence: MIT
+    required: false
+    for: all
+    engine: any
+    why: replies to Google and Yelp reviews (shops and local businesses)
+
+  - name: complaint-de-escalation
+    repo: https://github.com/Ootto-AI/claude-support-skills
+    path: skills/complaint-de-escalation
+    commit: 0b45fdcd8674d10a0c4ee74ababc9f17de0a1325
+    licence: MIT
+    required: false
+    for: all
+    engine: any
+    why: calm replies to unhappy customers
+
+  # Sites
+  - name: impeccable
+    repo: https://github.com/pbakaus/impeccable
+    path: .claude/skills/impeccable
+    commit: b49177d32788f2dc585c42831d845dacf1ebed2c
+    licence: Apache-2.0
+    required: true
+    for: sites
+    engine: any
+    why: UI design and critique
+
+  - name: ui-ux-pro-max
+    repo: https://github.com/nextlevelbuilder/ui-ux-pro-max-skill
+    path: .claude/skills/ui-ux-pro-max
+    commit: 281e4537afb11333ac9947783779aaf314ebfbf2
+    licence: MIT
+    required: true
+    for: sites
+    engine: any
+    why: UI styles, colour palettes and font pairings
+
+  - name: modern-web-guidance
+    repo: https://github.com/GoogleChrome/modern-web-guidance
+    path: skills/modern-web-guidance
+    commit: 64a6d708f5a43f2cd3fde5d4d7db3905ba1bdf65
+    licence: Apache-2.0
+    required: true
+    for: sites
+    engine: any
+    why: current web platform guidance from the Chrome team
+
+  - name: seo
+    repo: https://github.com/affaan-m/everything-claude-code
+    path: skills/seo
+    commit: 4adeee6732a12d1540f49a4d50a38ce8c97f9a53
+    licence: MIT
+    required: true
+    for: sites
+    engine: any
+    why: technical and on-page SEO, structured data, sitemaps
+
+  - name: web-design-guidelines
+    repo: https://github.com/vercel-labs/agent-skills
+    path: skills/web-design-guidelines
+    commit: 5a37a6329fbad3666c3207392a6a7c0110e92efb
+    licence: MIT (stated in the repo README; no LICENSE file)
+    required: false
+    for: sites
+    engine: any
+    why: checks UI code against web interface guidelines
+
+# Claude Code plugins, installed with `claude plugin install <id> --scope local`
+# (recorded in .claude/settings.local.json on this computer only).
+plugins:
+  - name: superpowers
+    id: superpowers@claude-plugins-official
+    repo: https://github.com/obra/superpowers
+    licence: MIT
+    required: true
+    for: all
+    why: planning, debugging and review habits for Claude
+
+  - name: frontend-design
+    id: frontend-design@claude-plugins-official
+    repo: https://github.com/anthropics/claude-plugins-official
+    licence: Apache-2.0
+    required: true
+    for: sites
+    why: distinctive, production-grade page design

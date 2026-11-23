@@ -18,7 +18,8 @@
     "doc": "node scripts/content-doc.mjs",
     "produce": "node scripts/produce.mjs",
     "publora": "node scripts/publora.mjs",
-    "check:captions": "node scripts/check-captions.mjs"
+    "check:captions": "node scripts/check-captions.mjs",
+    "smoke": "remotion still src/index.ts Starter out/smoke.png --frame=60"
   },
   "dependencies": {
     "@fontsource/jetbrains-mono": "5.3.0",
